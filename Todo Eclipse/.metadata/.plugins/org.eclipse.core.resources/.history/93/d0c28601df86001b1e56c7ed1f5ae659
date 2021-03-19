@@ -1,0 +1,13 @@
+<struts-config>
+	
+	<form-beans>
+		<form-bean name="SignInForm" type="formbeans.SignInBean" />
+	</form-beans>
+	
+	<action-mappings>
+		
+	</action-mappings>
+	
+	<message-resources parameter="Messages"/>
+	
+</struts-config>

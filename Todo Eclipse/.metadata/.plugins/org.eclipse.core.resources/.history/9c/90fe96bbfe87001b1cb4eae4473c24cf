@@ -1,0 +1,7 @@
+msg1 = <font color='red'> Email is Invalid </font>
+msg2 = <font color='red'> Email does not exists </font>
+msg3 = <font color='red'> Email already exists </font>
+msg4 = <font color='red'> Password should be minimum 6 length </font>
+msg5 = <font color='red'> Password is Incorrect(Only 3 attempts) </font>
+msg6 = <font color='red'> Enter anyone security answer </font>
+msg7 = <font color='red'> Enter correct security answer </font>

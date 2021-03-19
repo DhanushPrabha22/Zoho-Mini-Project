@@ -1,0 +1,4 @@
+msg1 = <font color='red'> Password is Incorrect </font>
+msg2 = <font color='red'> Email is Incorrect </font>
+msg3 = <font color='red'> Please select an option between 1-6 </font>
+msg4 = <font color='red'> No one won yet... </font>

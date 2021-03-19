@@ -1,0 +1,13 @@
+1615955429038	Rename resource 'index.jsp'
+1615955444966	Rename resource 'login.jsp'
+1615964674662	Move 2 resources to 'WebContent'
+1615964679350	Delete element
+1615966785497	Delete element
+1615967252267	Move 2 resources to 'account'
+1615970580808	Rename type 'JDBCConnection'
+1615975193161	Move 2 resources to 'WebContent'
+1615975201080	Move 'myList.jsp' to 'WebContent'
+1615975205771	Delete elements
+1615979819900	Delete element
+1616003838844	Delete element
+1616126763450	Rename resource 'myList.jsp'

@@ -1,0 +1,23 @@
+<struts-config>
+	
+	<form-beans>
+		<form-bean name="SignInForm" type="formbeans.SignInBean" />
+		<form-bean name="ForgotPwd" type="formbeans.ForgotPwdBean" />
+		<form-bean name="SignUpForm" type="formbeans.SignUpBean" />
+	</form-beans>
+	
+	<action-mappings>
+		<action name="SignInForm" path="/signingin" scope="session" input="/sign_in.jsp" type="actioncontrollers.SignInController">
+	
+		</action>
+		<action name="ForgotPwd" path="/forgotpwd" scope="session" input="/forgotPwd.jsp" type="actioncontrollers.ForgotPwdController">
+	
+		</action>
+		<action name="SignUpForm" path="/signingup" scope="session" input="/sign_up.jsp" type="actioncontrollers.ForgotPwdController">
+	
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="Messages"/>
+	
+</struts-config>

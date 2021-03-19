@@ -1,0 +1,13 @@
+<struts-config>
+	
+	<form-beans>
+	
+	</form-beans>
+	
+	<action-mappings>
+		
+	</action-mappings>
+	
+	<message-resources parameter=""/>
+	
+</struts-config>

@@ -1,0 +1,52 @@
+package dao;
+
+import java.sql.*;
+import java.time.Period;
+import java.util.regex.Pattern;
+
+
+public class JDBC_List_Operations {
+	
+	public Connection getConnection() {
+		try{
+			//Database Connection
+			Class.forName("com.mysql.jdbc.Driver");  
+			Connection conn = DriverManager.getConnection(JDBCUtils.getUrl(), JDBCUtils.getUsername(), JDBCUtils.getPassword());
+			return conn;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+			return null;
+	}
+	
+	
+	public int getUserId(String email) {
+		int id = -1;
+		try{
+			Connection conn = getConnection();
+			String sql = "SELECT user_id FROM user_id_table WHERE email=?;";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()){
+    			id = rs.getInt("user_id");
+    		}
+			rs.close();
+			conn.close();
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return id;
+	}
+	
+	
+	public void insertTaskId(int userId, String taskName) {
+		
+	}
+	
+	
+	public boolean isCheckTaskName(int userId, String taskName) {
+		return false;
+	}
+	
+}

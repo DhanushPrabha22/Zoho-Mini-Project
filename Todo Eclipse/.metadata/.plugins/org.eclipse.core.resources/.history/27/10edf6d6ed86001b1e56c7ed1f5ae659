@@ -1,0 +1,16 @@
+<struts-config>
+	
+	<form-beans>
+		<form-bean name="SignInForm" type="formbeans.SignInBean" />
+		<form-bean name="SignInForm" type="formbeans.ForgotPwdBean" />
+	</form-beans>
+	
+	<action-mappings>
+		<action name="SignInForm" path="/signingin" scope="session" input="/sign_in.jsp" type="actioncontrollers.SignInController">
+	
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="Messages"/>
+	
+</struts-config>

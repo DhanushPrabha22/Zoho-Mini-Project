@@ -1,0 +1,5 @@
+$(function() {
+    $("#email").attr("placeholder", "some text");
+    $("#pwd").attr("placeholder", "some text");
+    $("#sec").attr("placeholder", "some text");
+});

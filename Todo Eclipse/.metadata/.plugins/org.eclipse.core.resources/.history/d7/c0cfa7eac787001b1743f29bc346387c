@@ -1,0 +1,191 @@
+package dao;
+
+import java.sql.*;
+import java.util.regex.Pattern;
+
+
+public class JDBC_Operations {
+
+	
+	public Connection getConnection() {
+		try{
+				//Database Connection
+				Class.forName("com.mysql.jdbc.Driver");  
+				Connection conn = DriverManager.getConnection("jdbc:mysql://sql6.freesqldatabase.com:3306/sql6397879", "sql6397879", "ImPdgMZY6l");
+				return conn;
+			}catch(Exception e){
+				System.out.println(e);
+			} 
+			return null;
+	}
+	
+	
+	public boolean insertUser(String email, String pwd, String secAns){
+		try{
+			TrippleDES tripledes = new TrippleDES();
+			
+			String encrypted1 = tripledes.encrypt(pwd);
+			
+			String normalSecAns = noamalizeSecurityAnswer(secAns);
+			String encrypted2 = tripledes.encrypt(normalSecAns);
+			
+			Connection conn = getConnection();
+			String sql = "INSERT INTO logindetails(email,password,security) VALUES(?,?,?);";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, encrypted1);
+			stmt.setString(3, encrypted2);
+			stmt.executeUpdate();
+			conn.commit();
+			conn.close();
+			return true;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return false;
+	}
+	
+	
+	public boolean insertAccount(String email) {
+		try{
+			Connection conn = getConnection();
+			String sql = "INSERT INTO accountdetails(email) VALUES(?);";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.executeUpdate();
+			conn.commit();
+			conn.close();
+			return true;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return false;
+	}
+	
+		
+	public boolean updatePassword(String email, String new_pwd) {
+		try{
+			TrippleDES tripledes = new TrippleDES();
+			
+			String encrypted = tripledes.encrypt(new_pwd);
+			
+			Connection conn = getConnection();
+			String sql = "UPDATE logindetails SET password=? WHERE email='"+email+"';";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, encrypted);
+			stmt.executeUpdate();
+			conn.commit();
+			conn.close();
+			return true;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return false;
+	}
+	
+	
+	public boolean isValid_Email(String email) {
+		
+		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
+                			"[a-zA-Z0-9_+&*-]+)*@" + 
+                			"(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
+                			"A-Z]{2,7}$"; 
+		Pattern pat = Pattern.compile(emailRegex); 
+		if (email == null) 
+            return false; 
+        return pat.matcher(email).matches(); 
+	}
+	
+	
+	public boolean isCheck_Email(String email){
+		try{
+			Connection conn = getConnection();
+			String sql = "SELECT * FROM logindetails WHERE email='"+email+"';";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			int count = 0;
+			while (rs.next()) 
+    			count++;
+    		if(count==0)
+    			return false;
+    		rs.close();
+    		conn.commit();
+			conn.close();
+			return true;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return false;
+	}
+	
+	
+	public boolean isCheck_SecurityAnswer(String email, String secAns){
+		try{
+			Connection conn = getConnection();
+			String sql = "SELECT * FROM logindetails WHERE email='"+email+"';";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			int count = 0;
+			String encryptedText = "";
+			while (rs.next()){
+    			count++;
+    			encryptedText += rs.getString("security");
+    		}
+    		if(count==0)
+    			return false;
+    		TrippleDES tripledes = new TrippleDES();
+    		
+    		String decrypted = tripledes.decrypt(encryptedText);
+    		
+    		String normalSecAns = noamalizeSecurityAnswer(secAns);
+    		
+    		if(!decrypted.equalsIgnoreCase(normalSecAns))
+    			return false;
+    		rs.close();
+    		conn.commit();
+			conn.close();
+			return true;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return false;
+	}
+	
+	
+	public boolean isCheck_Password(String email, String password) {
+		try {
+			Connection conn = getConnection();
+			
+			String sql = "SELECT * FROM logindetails WHERE email='"+email+"';";
+			
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			int count = 0;
+			String encryptedText = "";
+			while (rs.next()){
+    			count++;
+    			encryptedText += rs.getString("password");
+    		}
+    		if(count==0)
+    			return false;
+    		TrippleDES tripledes = new TrippleDES();
+    		
+    		String decrypted = tripledes.decrypt(encryptedText);
+    		if(!decrypted.equals(password))
+    			return false;
+    		rs.close();
+    		conn.commit();
+			conn.close();
+			return true;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+		return false;
+	}
+	
+	
+	public String noamalizeSecurityAnswer(String secAns) {
+		String result = secAns.replaceAll("[^A-Za-z0-9]",""); 
+		return result;
+	}
+}

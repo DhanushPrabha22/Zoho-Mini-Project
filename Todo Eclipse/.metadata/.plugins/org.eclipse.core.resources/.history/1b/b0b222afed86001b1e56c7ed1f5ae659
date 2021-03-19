@@ -1,0 +1,9 @@
+package formbeans;
+
+import javax.servlet.http.*;
+import org.apache.struts.action.*;
+
+
+public class ForgotPwdBean extends ActionForm{
+	private String email, password, security;
+}

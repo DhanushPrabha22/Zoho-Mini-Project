@@ -1,0 +1,20 @@
+<!--
+
+forgotPwd.jsp
+
+java version "1.8.0_45"
+
+Created By Dhanush L
+                 
+-->
+
+<%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Insert title here</title>
+</head>
+<body>
+
+</body>
+</html>

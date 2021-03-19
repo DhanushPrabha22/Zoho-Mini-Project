@@ -1,0 +1,19 @@
+package dao;
+
+public class JDBCUtils {
+	
+	private static final String URL = "jdbc:mysql://127.0.0.1:3306/";
+	private static final String USERNAME = "root" ;
+	private static final String PASSWORD = "dhanush.l02022000";
+	
+	public static String getUrl() {
+		return URL;
+	}
+	public static String getUsername() {
+		return USERNAME;
+	}
+	public static String getPassword() {
+		return PASSWORD;
+	}
+	
+}

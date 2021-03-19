@@ -1,0 +1,10 @@
+package formbeans;
+
+import javax.servlet.http.*;
+import org.apache.struts.action.*;
+import dao.*;
+
+
+public class UserTaskListBean extends ActionForm {
+
+}

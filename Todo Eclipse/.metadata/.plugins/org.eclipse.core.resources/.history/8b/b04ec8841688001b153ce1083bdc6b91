@@ -1,0 +1,15 @@
+function openNav() {
+  document.getElementById("mySidenav").style.width = "350px";
+  document.getElementById("main").style.marginLeft = "350px";
+  document.getElementById("emailId").style.marginLeft = "350px";
+  document.getElementById("container1").style.width = "60%";
+  document.getElementById("container2").style.width = "35%";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  document.getElementById("emailId").style.marginLeft = "15px";
+  document.getElementById("container1").style.width = "350px";
+  document.getElementById("container2").style.width = "350px";
+}

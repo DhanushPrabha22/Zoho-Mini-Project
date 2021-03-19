@@ -1,0 +1,29 @@
+package formbeans;
+
+import javax.servlet.http.*;
+import org.apache.struts.action.*;
+import dao.*;
+
+
+public class UserTaskListBean extends ActionForm {
+		
+		private String taskName, description;
+
+		public String getTaskName() {
+			return taskName;
+		}
+
+		public void setTaskName(String taskName) {
+			this.taskName = taskName;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		
+		
+}

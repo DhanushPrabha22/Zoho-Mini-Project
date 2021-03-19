@@ -1,0 +1,24 @@
+<struts-config>
+	
+	<form-beans>
+	
+		<form-bean name="LoginFrom" type="formBeans.LoginFormBean" />
+		<form-bean name="PlayScreen" type="formBeans.PlayScreenBean" />
+		
+	</form-beans>
+	
+	<action-mappings>
+	
+		<action name="LoginFrom" path="/processing" scope="session" validate="true" input="/index.jsp" type="actionControl.LoginFormController">
+			<forward name="PlayScreen" path="/playScreen.jsp" />
+		</action>
+		
+		<action name="PlayScreen" path="/playing" scope="session" validate="true" input="/playScreen.jsp" type="actionControl.PlayScreenController">
+			<forward name="won" path="/finalScreen.jsp" />
+		</action>
+		
+	</action-mappings>
+	
+	<message-resources parameter="formBeans/Messages"/>
+	
+</struts-config>

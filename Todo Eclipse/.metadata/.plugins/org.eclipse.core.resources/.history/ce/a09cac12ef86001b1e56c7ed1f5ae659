@@ -1,0 +1,7 @@
+function frogotPwd(){
+	document.location.href='/ToDo_List/account/forgotPwd.jsp';
+}
+
+function create_account(){
+	document.location.href='/ToDo_List/account/sign_up.jsp';
+}
