@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Insert title here</title>
+</head>
+<body>
+	<%= request.getParameter("userId")%><br>
+	<%= request.getParameter("taskId")%><br>
+	<%= request.getParameter("taskStatus")%><br>
+	<%= request.getParameter("taskName")%><br>
+	<%= request.getParameter("importantFlag")%><br>
+	<%= request.getParameter("flaggedFlag")%><br>
+	<%= request.getParameter("subTasks")%><br>
+	<%= request.getParameter("remainder")%><br>
+	<%= request.getParameter("dueDate")%><br>
+	<%= request.getParameter("repeat")%><br>
+	<%= request.getParameter("category")%><br>
+	<%= request.getParameter("description")%>
+</body>
+</html>

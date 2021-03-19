@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app>
 
-  	<display-name>To-Do List App</display-name>
+  	<display-name>To-Do List</display-name>
 	
 	<welcome-file-list>
 		<welcome-file>sign_in.jsp</welcome-file>

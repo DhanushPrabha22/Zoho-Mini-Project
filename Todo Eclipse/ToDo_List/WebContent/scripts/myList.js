@@ -30,4 +30,9 @@ window.onload = function(e){
 $(function() {
     $("#taskName").attr("placeholder", "Task Name");
     $("#description").attr("placeholder", "Description");
+    $("#remainder").attr("placeholder", "Remainder (YYYY-MM-DD)");
+    $("#dueDate").attr("placeholder", "Due Date (YYYY-MM-DD)");
+    $("#repeat").attr("placeholder", "Repeat");
+    $("#subTasks").attr("placeholder", "Sub Tasks");
+    $("#category").attr("placeholder", "Category");
 });

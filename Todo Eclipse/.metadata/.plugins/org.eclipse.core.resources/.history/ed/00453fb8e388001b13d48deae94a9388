@@ -1,0 +1,104 @@
+package formbeans;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.*;
+import org.apache.struts.action.*;
+import dao.*;
+
+
+public class TaskUpdateBean extends ActionForm {
+	
+	String taskStatus, taskName, flagStatus, subTasks, remainder, dueDate, repeat, category, description;
+
+	public String getTaskStatus() {
+		return taskStatus;
+	}
+
+	public void setTaskStatus(String taskStatus) {
+		this.taskStatus = taskStatus;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public String getFlagStatus() {
+		return flagStatus;
+	}
+
+	public void setFlagStatus(String flagStatus) {
+		this.flagStatus = flagStatus;
+	}
+
+	public String getSubTasks() {
+		return subTasks;
+	}
+
+	public void setSubTasks(String subTasks) {
+		this.subTasks = subTasks;
+	}
+
+	public String getRemainder() {
+		return remainder;
+	}
+
+	public void setRemainder(String remainder) {
+		this.remainder = remainder;
+	}
+
+	public String getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public String getRepeat() {
+		return repeat;
+	}
+
+	public void setRepeat(String repeat) {
+		this.repeat = repeat;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	@Override
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		taskName = "";
+		subTasks = "";
+		remainder = "";
+		dueDate = "";
+		repeat = "";
+		category = "";
+		description = "";
+	}
+	
+	@Override
+	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+		
+		ActionErrors ae = new ActionErrors();
+		
+		return ae;
+	}
+	
+}

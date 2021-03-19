@@ -29,7 +29,7 @@ Created By Dhanush L
 <%
 	ServletContext context = request.getSession().getServletContext();
 	String currUser = (String) context.getAttribute("currUser");
-	int userId, taskStatus, count=0;
+	int userId=-1, taskStatus, count=0;
 	String taskName="", description="";
 	Date dateAdded;
 %>
@@ -53,11 +53,10 @@ Created By Dhanush L
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <br><br><br><br><br>
-  <a href="#">My Day</a>
+  <a href="#">All Tasks</a>
   <a href="#">Important Tasks</a>
   <a href="#">Flagged Tasks</a>
   <a href="#">Planned</a>
-  <a href="#">All Tasks</a>
 </div>
 <div id="main">
 	<div>
@@ -91,7 +90,7 @@ Created By Dhanush L
 						dateAdded = rs.getDate("date_added");
 						taskStatus = rs.getInt("task_status");
 			%>
-					<div class="">
+					<div>
 					<div role="none">
 					<div class="taskItem">
 					<div class="taskItem-body">
@@ -137,7 +136,6 @@ Created By Dhanush L
 					</div>
 					</div>
 					</div>
-					
 			<%
 					}
 					rs.close();
@@ -149,27 +147,30 @@ Created By Dhanush L
 			</div>
 			</div>
 			</div>
+			<br><br>
 		</div>
+		
 		<div class="container2">
 			<div class="details">
 				<div data-is-scrollable="true" class="details-body">
-					<div class="detailHeader">
-						<div class="detailHeader-titleWrapper">
-							<div>
-								<html:radio property="taskStatus" value="1"/>
-							</div>
-							<div class="detailHeader-title">
-								<span>
-									<span>
-										
-									</span>
-								</span>
-							</div>
-							<div>
-								
-							</div>
-						</div>
-					</div>
+					<h3 style="color:#78909C; text-align:center; font-weight:bold">Update your tasks here...</h3>
+					<br>
+					<form action="updatingTasks.jsp" method="post">
+						<input type="hidden" name="userId" value="<%=userId%>"/>
+						
+						<input type="checkbox" name="taskStatus"/>
+						<input type="text" class="form-input1" id="taskName" name="taskName"/>
+						<input type="checkbox" name="importantFlag"/>
+                        <input type="checkbox" name="flaggedFlag"/>
+						<input type="text" class="form-input1" id="subTasks" name="subTasks"/>
+						<input type="text" class="form-input1" id="remainder" name="remainder"/>
+						<input type="text" class="form-input1" id="dueDate" name="dueDate"/>
+						<input type="text" class="form-input1" id="repeat" name="repeat"/>
+						<input type="text" class="form-input1" id="category" name="category"/>
+						<input type="text" class="form-input" id="description" name="description"/>
+						<br><br><br>
+						<input type="submit" class="sign-up button1" value="Update"/>
+					</form> 
 				</div>
 			</div>
 		</div>
@@ -193,7 +194,6 @@ Created By Dhanush L
 					<html:submit styleClass="sign-up button1" value="Add"/>
 				</html:form>
 			</div>
-    	
   	</div>
 </div>
 </body>

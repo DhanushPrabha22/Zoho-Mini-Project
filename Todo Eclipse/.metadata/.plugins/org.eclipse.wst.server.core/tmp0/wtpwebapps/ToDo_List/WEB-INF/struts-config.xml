@@ -8,16 +8,16 @@
 	</form-beans>
 	
 	<action-mappings>
-		<action name="SignInForm" path="/signingin" scope="session" validate="true" input="/sign_in.jsp" type="actioncontrollers.SignInController">
+		<action attribute="SignInForm" name="SignInForm" path="/signingin" scope="session" validate="true" input="/sign_in.jsp" type="actioncontrollers.SignInController">
 			<forward name="success" path="/UserTaskList.jsp" />
 		</action>
-		<action name="ForgotPwd" path="/forgotpwd" scope="session" validate="true" input="/forgotPwd.jsp" type="actioncontrollers.ForgotPwdController">
+		<action attribute="ForgotPwd" name="ForgotPwd" path="/forgotpwd" scope="session" validate="true" input="/forgotPwd.jsp" type="actioncontrollers.ForgotPwdController">
 			<forward name="success" path="/sign_in.jsp" />
 		</action>
-		<action name="SignUpForm" path="/signingup" scope="session" validate="true" input="/sign_up.jsp" type="actioncontrollers.SignUpController">
+		<action attribute="SignUpForm" name="SignUpForm" path="/signingup" scope="session" validate="true" input="/sign_up.jsp" type="actioncontrollers.SignUpController">
 			<forward name="success" path="/sign_in.jsp" />
 		</action>
-		<action name="AddTaskForm" path="/adding" scope="session" validate="true" input="/UserTaskList.jsp" type="actioncontrollers.UserTaskListController">
+		<action attribute="AddTaskForm" name="AddTaskForm" path="/adding" scope="session" validate="true" input="/UserTaskList.jsp" type="actioncontrollers.UserTaskListController">
 			<forward name="success" path="/UserTaskList.jsp" />
 		</action>
 	</action-mappings>
