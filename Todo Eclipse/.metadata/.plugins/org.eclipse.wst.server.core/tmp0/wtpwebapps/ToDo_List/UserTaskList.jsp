@@ -29,7 +29,7 @@ Created By Dhanush L
 <%
 	ServletContext context = request.getSession().getServletContext();
 	String currUser = (String) context.getAttribute("currUser");
-	int userId=-1, taskStatus, count=0;
+	int userId=-1, taskStatus, count=0, taskId=-1, importantStatus, flaggedStatus;
 	String taskName="", description="";
 	Date dateAdded;
 %>
@@ -76,19 +76,27 @@ Created By Dhanush L
 				userId = jdbc.getUserId(currUser);
 				
 				try{
-					String sql = "SELECT task_name, description, date_added, task_status FROM task_id_table "+
+					
+					String sql = "SELECT task_id_table.task_id, task_name, description, date_added, task_status, important_status, flagged_status "+
+								 "FROM task_id_table "+
 								 "INNER JOIN tasks_table ON "+
 						    	 "(task_id_table.user_id=? AND task_id_table.task_id=tasks_table.task_id) "+
-								 "ORDER BY task_name ASC";
+								 "ORDER BY date_added ASC";
+					
 					PreparedStatement stmt = conn.prepareStatement(sql);
 					stmt.setInt(1, userId);
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()){
 						count++;
+						taskId = rs.getInt("task_id");
 						taskName = rs.getString("task_name");
 						description = rs.getString("description");
 						dateAdded = rs.getDate("date_added");
 						taskStatus = rs.getInt("task_status");
+						importantStatus = rs.getInt("important_status");
+						flaggedStatus = rs.getInt("flagged_status");
+						
+						ResultSet rs1, rs2, rs3;
 			%>
 					<div>
 					<div role="none">
@@ -99,39 +107,89 @@ Created By Dhanush L
 						if(taskStatus==1){
 			%>
 						<div class="round">
-							<input type="checkbox" id="checkbox" checked disabled/>
-   							 <label for="checkbox"></label>
+							<input type="checkbox" id="statusChk<%=count%>" value="on" checked disabled/>
+   							 <label for="statusChk<%=count%>"></label>
 						</div>
 			<%	
 						}else{ 
 			%>
 						<div class="round">
-							<input type="checkbox" id="checkbox" disabled/>
-   							 <label for="checkbox"></label>
+							<input type="checkbox" id="statusChk<%=count%>" value="off" disabled/>
+   							 <label for="statusChk<%=count%>"></label>
 						</div>
 						
 			<% 
 						}
 			%>			
 						</div>
-						<button tabindex="0" class="taskItem-titleWrapper">
+						<button tabindex="0" class="taskItem-titleWrapper" id="taskBtn<%=count%>" onclick="updateTask(this.id)">
 							<span class="taskItem-title">
 								<span>
-									<span>
+									<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>">
 										<%=taskName%>
+									</span>
+									<span id="taskDateSpan<%=count%>">
+										| Created on <%=dateAdded%>
+									</span>
+									<span id="taskIdSpan<%=count%>" style="visibility:hidden">
+										<%=taskId%>
 									</span>
 								</span>
 							</span>
 							<div class="metaDataInfo">
 								<span class="metaDataInfo-group">
 									<span>
-										<span>
+										<span style="font-size:70%">
 											<%=description%>
 										</span>
 									</span>
 								</span>
 							</div>
+							<div class="metaDataInfo">
+								<span class="metaDataInfo-group">
+									<span>
+										<span style="font-size:70%">
+											<%=description%> <%=description%>
+										</span>
+									</span>
+								</span>
+							</div>
 						</button>
+			<%
+						if(importantStatus==1){
+			%>
+						<div style="margin-right:45px; margin-top:5px; margin-left:5px;">
+							<input class="important" type="checkbox" id="impStatusShow<%=count%>" value="on" checked disabled/>
+   							 <label class="importantlabelShow" for="impStatusShow<%=count%>"></label>
+						</div>
+						
+			<%
+						}else{
+			%>
+						<div style="margin-right:45px; margin-top:5px; margin-left:5px;">
+							<input class="important" type="checkbox" id="impStatusShow<%=count%>" value="off" disabled/>
+   							 <label class="importantlabelShow" for="impStatusShow<%=count%>"></label>
+						</div>
+			<%
+						}
+						if(flaggedStatus==1){
+			%>
+						<div style="margin-right:45px; margin-left:-30px; margin-top:5px;">
+							<input class="important" type="checkbox" id="flagStatusShow<%=count%>" value="on" checked disabled/>
+   							 <label class="importantlabelShow2" for="flagStatusShow<%=count%>"></label>
+						</div>
+						
+			<%
+						}else{
+			%>
+						<div style="margin-right:45px; margin-left:-30px; margin-top:5px;">
+							<input class="important" type="checkbox" id="flagStatusShow<%=count%>" value="off" disabled/>
+   							<label class="importantlabelShow2" for="flagStatusShow<%=count%>"></label>
+						</div>
+			
+			<%
+						}
+			%>
 					</div>
 					</div>
 					</div>
@@ -153,23 +211,65 @@ Created By Dhanush L
 		<div class="container2">
 			<div class="details">
 				<div data-is-scrollable="true" class="details-body">
-					<h3 style="color:#78909C; text-align:center; font-weight:bold">Update your tasks here...</h3>
-					<br>
 					<form action="updatingTasks.jsp" method="post">
 						<input type="hidden" name="userId" value="<%=userId%>"/>
-						
-						<input type="checkbox" name="taskStatus"/>
-						<input type="text" class="form-input1" id="taskName" name="taskName"/>
-						<input type="checkbox" name="importantFlag"/>
-                        <input type="checkbox" name="flaggedFlag"/>
-						<input type="text" class="form-input1" id="subTasks" name="subTasks"/>
-						<input type="text" class="form-input1" id="remainder" name="remainder"/>
-						<input type="text" class="form-input1" id="dueDate" name="dueDate"/>
-						<input type="text" class="form-input1" id="repeat" name="repeat"/>
-						<input type="text" class="form-input1" id="category" name="category"/>
-						<input type="text" class="form-input" id="description" name="description"/>
-						<br><br><br>
-						<input type="submit" class="sign-up button1" value="Update"/>
+						<input type="text" style="visibility:hidden" name="taskId" id="taskId" required/>
+						<div class="detailHeader" style="border-radius:10px; margin-top:-25px;">
+						<div class="detailHeader-titleWrapper">
+							<div class="round" style="margin-top:-10px;margin-left:15px;">
+								<input type="checkbox" name="taskStatus" id="taskStatus"/>
+   							 	<label for="taskStatus"></label>
+							</div>
+							<div class="detailHeader-title">
+								<input type="text" class="form-input2" style="width:175px;" id="taskNameF" name="taskNameF" readonly/>
+							</div>
+							<div style="margin-right:45px; margin-top:5px; margin-left:5px;">
+								<input class="important" type="checkbox" name="importantFlag" id="impStatus"/>
+   							 	<label class="importantlabel" for="impStatus"></label>
+							</div>
+							<div style="margin-right:45px; margin-left:-30px; margin-top:5px;">
+								<input class="important" type="checkbox" name="flaggedFlag" id="flagStatus"/>
+   							 	<label class="importantlabel2" for="flagStatus"></label>
+							</div>
+                        </div>
+                        	<div class="input-container">
+                        		<i class="fa fa-plus icon"></i>
+                        		<input type="text" class="form-input2" style="width:300px;" id="subTasks" name="subTasks"/>
+                        	</div>
+                        </div>
+                        <br>
+                        <div class="detailHeader" style="border-radius:10px;">
+                        	<div class="input-container">
+                        		<i class="fa fa-bell icon"></i>
+								<input type="text"  class="form-input2" onfocus="(this.type='date')" onblur="(this.type='text')" style="width:300px;" id="remainder" name="remainder"/>
+							</div>
+							<div class="input-container">
+                        		<i class="fa fa-calendar icon"></i>
+								<input type="text" class="form-input2" onfocus="(this.type='date')" onblur="(this.type='text')" style="width:300px;" id="dueDate" name="dueDate"/>
+							</div>
+							<div class="input-container">
+                        		<i class="fa fa-repeat icon"></i>
+								<input type="text" class="form-input2" style="width:300px;" id="repeat" name="repeat"/>
+							</div>
+						</div>
+						<br>
+						<div class="detailHeader" style="border-radius:10px;">
+							<div class="input-container">
+                        		<i class="fa fa-tags icon"></i>
+								<input type="text" class="form-input2" style="height:40px;width:300px;" id="category" name="category"/>
+							</div>
+						</div>
+						 <br>
+						 <div class="detailHeader" style="border-radius:10px;">
+						 	<div class="input-container">
+                        		<i class="fa fa-info-circle icon"></i>
+								<input type="text" class="form-input2" style="height:60px;border-radius:0px;width:300px;" id="descriptionF" name="descriptionF"/>
+						 	</div>
+						 </div>
+						<br>
+						<div class="detailHeader-titleWrapper" style="text-align:center">
+							<input type="submit" class="sign-up button1" value="Update"/>
+						</div>
 					</form> 
 				</div>
 			</div>

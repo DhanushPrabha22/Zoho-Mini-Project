@@ -27,11 +27,55 @@ window.onload = function(e){
 	}
 }
 
+function updateTask(id){
+	
+	var cId = id.split(/(\d+)/);
+	
+	var spanId = "taskNameSpan"+cId[1];
+	var spanId2 = "taskIdSpan"+cId[1];
+	var taskStatusId = "statusChk"+cId[1];
+	var impStatusId = "impStatusShow"+cId[1];
+	var flagStatusId = "flagStatusShow"+cId[1];
+	
+	var taskName = document.getElementById(spanId).innerHTML;
+	var taskId = document.getElementById(spanId2).innerHTML;
+	var taskStatus = document.getElementById(taskStatusId).value;
+	var impStatus = document.getElementById(impStatusId).value;
+	var flagStatus = document.getElementById(flagStatusId).value;
+	
+	taskName = taskName.split(/\s/).join('');
+	taskId = taskId.split(/\s/).join('');
+	
+	console.log(taskStatus);
+	
+	$(function() {
+	    $("#taskNameF").attr("value", taskName);
+	    $("#taskId").attr("value", taskId);
+	    if(taskStatus === 'on'){
+	    	$("#taskStatus").prop("checked", true);
+	    }else if(taskStatus === 'off'){
+	    	$("#taskStatus").prop("checked", false);
+	    }
+	    if(impStatus === 'on'){
+	    	$("#impStatus").prop("checked", true);
+	    }else if(taskStatus === 'off'){
+	    	$("#impStatus").prop("checked", false);
+	    }
+	    if(flagStatus === 'on'){
+	    	$("#flagStatus").prop("checked", true);
+	    }else if(taskStatus === 'off'){
+	    	$("#flagStatus").prop("checked", false);
+	    }
+	});
+}
+
 $(function() {
+    $("#taskNameF").attr("placeholder", "Task Name");
+    $("#descriptionF").attr("placeholder", "Description");
     $("#taskName").attr("placeholder", "Task Name");
     $("#description").attr("placeholder", "Description");
-    $("#remainder").attr("placeholder", "Remainder (YYYY-MM-DD)");
-    $("#dueDate").attr("placeholder", "Due Date (YYYY-MM-DD)");
+    $("#remainder").attr("placeholder", "Remainder");
+    $("#dueDate").attr("placeholder", "Due Date");
     $("#repeat").attr("placeholder", "Repeat");
     $("#subTasks").attr("placeholder", "Sub Tasks");
     $("#category").attr("placeholder", "Category");

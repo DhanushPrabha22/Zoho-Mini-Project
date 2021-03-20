@@ -1,0 +1,56 @@
+function openNav() {
+  document.getElementById("mySidenav").style.width = "350px";
+  document.getElementById("main").style.marginLeft = "350px";
+  document.getElementById("emailId").style.marginLeft = "350px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  document.getElementById("emailId").style.marginLeft = "15px";
+}
+
+window.onload = function(e){ 
+	var modal = document.getElementById("myModal");
+	var btn = document.getElementById("myBtn");
+	var span = document.getElementsByClassName("close")[0];
+	btn.onclick = function() {
+		modal.style.display = "block";
+	}
+	span.onclick = function() {
+		modal.style.display = "none";
+	}
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	}
+}
+
+function updateTask(id){
+	var cId = id.split(/(\d+)/);
+	var spanId = "taskNameSpan"+cId[1];
+	var spanId2 = "taskIdSpan"+cId[1];
+	var taskName = document.getElementById(spanId).innerHTML;
+	var taskId = document.getElementById(spanId2).innerHTML;
+	taskName = taskName.split(/\s/).join('');
+	taskId = taskId.split(/\s/).join('');
+	console.log(taskName);
+	console.log(taskId);
+	$(function() {
+	    $("#taskNameF").attr("value", taskName);
+	    $("#taskId").attr("value", taskId);
+	});
+}
+
+$(function() {
+    $("#taskNameF").attr("placeholder", "Task Name");
+    $("#descriptionF").attr("placeholder", "Description");
+    $("#taskName").attr("placeholder", "Task Name");
+    $("#description").attr("placeholder", "Description");
+    $("#remainder").attr("placeholder", "Remainder (yyyy-MM-dd)");
+    $("#dueDate").attr("placeholder", "Due Date (yyyy-MM-dd)");
+    $("#repeat").attr("placeholder", "Repeat");
+    $("#subTasks").attr("placeholder", "Sub Tasks");
+    $("#category").attr("placeholder", "Category");
+});

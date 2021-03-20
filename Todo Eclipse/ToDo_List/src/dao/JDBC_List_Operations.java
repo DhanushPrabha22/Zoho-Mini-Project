@@ -81,13 +81,36 @@ public class JDBC_List_Operations {
 			Date currDate = new java.sql.Date(millis); 
 			
 			Connection conn = getConnection(); 
-			String sql = "INSERT INTO tasks_table(task_id, description, date_added, task_status) VALUES(?,?,?,?);";
+			String sql = "INSERT INTO tasks_table(task_id, description, date_added, task_status, important_status, flagged_status) VALUES(?,?,?,?,?,?);";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			
 			stmt.setInt(1, taskId);
 			stmt.setString(2, description);
 			stmt.setDate(3, currDate);
 			stmt.setInt(4, 0);
+			stmt.setInt(5, 0);
+			stmt.setInt(6, 0);
+			
+			stmt.executeUpdate();
+			conn.close();
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+	}
+	
+	public void updateTaskDetails(int taskId, String description, int taskStatus, int importantFlag, int flaggedFlag) {
+		try {
+			Connection conn = getConnection(); 
+			
+			String sql = "UPDATE tasks_table SET description=?, task_status=?, important_status=?, flagged_status=? WHERE task_id=?;";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			stmt.setString(1, description);
+			stmt.setInt(2, taskStatus);
+			stmt.setInt(3, importantFlag);
+			stmt.setInt(4, flaggedFlag);
+			stmt.setInt(5, taskId);
+			
 			
 			stmt.executeUpdate();
 			conn.close();

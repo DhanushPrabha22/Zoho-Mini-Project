@@ -1,0 +1,108 @@
+<!--
+
+updatingTasks.jsp
+
+java version "1.8.0_45"
+
+Created By Dhanush L
+                 
+-->
+
+<%@ page import="dao.*"%>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.time.Period"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>To-Do</title>
+<link rel="icon" href="resources/appIcon.png">
+</head>
+<body>
+	<%= request.getParameter("userId")%><br>
+	<%= request.getParameter("taskId")%><br>
+	<%= request.getParameter("taskStatus")%><br>
+	<%= request.getParameter("taskNameF")%><br>
+	<%= request.getParameter("importantFlag")%><br>
+	<%= request.getParameter("flaggedFlag")%><br>
+	<%= request.getParameter("subTasks")%><br>
+	<%= request.getParameter("remainder")%><br>
+	<%= request.getParameter("dueDate")%><br>
+	<%= request.getParameter("repeat")%><br>
+	<%= request.getParameter("category")%><br>
+	<%= request.getParameter("descriptionF")%>
+	
+	<%
+	    JDBC_List_Operations jdbc = new JDBC_List_Operations();
+		
+		int userId = Integer.parseInt(request.getParameter("userId")) , taskId=-1, taskStatus=-1, importantFlag=-1, flaggedFlag=-1;
+		String description="", repeat="", subTasks="", category="";
+		String[] temp;
+		java.sql.Date remainder, dueDate;
+		
+		if(!request.getParameter("taskNameF").equals("")){
+			taskId = Integer.parseInt(request.getParameter("taskId"));
+			try{
+				if(request.getParameter("taskStatus").equals("on"))
+					taskStatus=1;
+					
+			}catch(Exception e){
+				taskStatus=0;
+			}
+			if(!request.getParameter("descriptionF").equals("")){
+				description += request.getParameter("descriptionF");
+			}
+			
+			jdbc.updateTaskDetails(taskId, description, taskStatus); //Status and Description Update
+			
+			try{
+				if(request.getParameter("importantFlag").equals("on"))
+					importantFlag=1;
+			}catch(Exception e){
+				importantFlag=0;
+			}
+			try{
+				if(request.getParameter("flaggedFlag").equals("on"))
+					flaggedFlag=1;
+			}catch(Exception e){
+				flaggedFlag=0;
+			}
+			if(!request.getParameter("category").equals("")){
+				temp = request.getParameter("category").split(" ");
+				for(String i:temp){
+					category += i+",";
+				}
+			}
+			
+			
+			
+			if(!request.getParameter("subTasks").equals("")){
+				temp = request.getParameter("subTasks").split(" ");
+				for(String i:temp){
+					subTasks += i+",";
+				}
+			}
+			
+			
+			
+			if(!request.getParameter("repeat").equals("")){
+				repeat += request.getParameter("repeat");
+			}
+			if(!request.getParameter("remainder").equals("")){
+				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+				java.util.Date date = sdf1.parse(request.getParameter("remainder"));
+				remainder = new java.sql.Date(date.getTime());
+			}
+			if(!request.getParameter("dueDate").equals("")){
+				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+				java.util.Date date = sdf1.parse(request.getParameter("dueDate"));
+				dueDate = new java.sql.Date(date.getTime()); 
+			}
+			
+			
+			
+		}
+	%>
+</body>
+</html>
