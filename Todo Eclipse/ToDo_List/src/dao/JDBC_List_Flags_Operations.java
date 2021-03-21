@@ -30,8 +30,11 @@ public class JDBC_List_Flags_Operations {
 			while (rs.next()){
 				count++;
     		}
-			if(count==0)
+			if(count==0) {
+				rs.close();
+				conn.close();
 				return false;
+			}
 			rs.close();
 			conn.close();
 		}catch(Exception e){
@@ -93,4 +96,27 @@ public class JDBC_List_Flags_Operations {
 		}
 	}
 	
+	
+	public String getCategoryRecord(int taskId) {
+		
+		String category = "";
+		
+		try {
+			
+			Connection conn = getConnection();
+			
+			String sql = "SELECT category_list FROM category_table WHERE task_id=?;";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, taskId);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				category += rs.getString("category_list");
+			}
+			rs.close();
+			conn.close();
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return category;
+	}
 }

@@ -1,0 +1,33 @@
+package dao;
+
+import java.sql.*;
+
+
+public class JDBC_List_Delete_Operations {
+	
+	public Connection getConnection() {
+		try{
+			//Database Connection
+			Class.forName("com.mysql.jdbc.Driver");  
+			Connection conn = DriverManager.getConnection(JDBCUtils.getUrl(), JDBCUtils.getUsername(), JDBCUtils.getPassword());
+			return conn;
+		}catch(Exception e){
+			System.out.println(e);
+		} 
+			return null;
+	}
+	
+	
+	public void deleteSubTaskRecord(int taskId) {
+		
+	}
+	
+	public void deleteDateRecord(int taskId) {
+		
+	}
+
+	public void deleteCategoryRecord(int taskId) {
+	
+	}
+	
+}

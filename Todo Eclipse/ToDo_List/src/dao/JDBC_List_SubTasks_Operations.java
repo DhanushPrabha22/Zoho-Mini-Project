@@ -31,8 +31,11 @@ public class JDBC_List_SubTasks_Operations {
 			while (rs.next()){
 				count++;
     		}
-			if(count==0)
+			if(count==0) {
+				rs.close();
+				conn.close();
 				return false;
+			}
 			rs.close();
 			conn.close();
 		}catch(Exception e){
@@ -68,7 +71,7 @@ public class JDBC_List_SubTasks_Operations {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			
 			stmt.setString(1, subTasks);
-			stmt.setInt(4, taskId);
+			stmt.setInt(2, taskId);
 			
 			stmt.executeUpdate();
 			conn.close();
@@ -93,5 +96,29 @@ public class JDBC_List_SubTasks_Operations {
 		}catch(Exception e){
 			System.out.println(e);
 		}
+	}
+	
+	
+	public String getSubTaskRecord(int taskId) {
+		
+		String subTasks="";
+		
+		try {
+			
+			Connection conn = getConnection();
+			
+			String sql = "SELECT subtask_list FROM subtasks_table WHERE task_id=?;";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, taskId);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				subTasks += rs.getString("subtask_list");
+			}
+			rs.close();
+			conn.close();
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return subTasks;
 	}
 }

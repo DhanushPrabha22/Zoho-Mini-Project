@@ -8,7 +8,7 @@ body {
 
 .taskItem-title{color:#767678}
 
-.taskItem-body{min-height:52px;display:flex;align-items:center;position:relative;word-wrap:break-word;word-break:break-word;padding:0 12px;box-shadow:0 17px 0 -16px #e5e5e5;flex-wrap:wrap}
+.taskItem-body{min-height:52px;display:flex;align-items:center;position:relative;word-wrap:break-word;word-break:break-word;padding:0 12px;box-shadow:0 17px 0 -16px #808080;flex-wrap:wrap}
 
 
 .taskItem-titleWrapper{font size:1.4rem;color:#34373d;cursor:default;position:relative;flex:1 1 0px;min-height:52px;padding:8px 12px;line-height:2rem;overflow:hidden;cursor:pointer}
@@ -20,7 +20,7 @@ button.taskItem-titleWrapper{border:none; background:transparent; margin-left:16
 
 .metaDataInfo{display:flex;align-items:center;font-size:1.2rem;line-height:1.6rem;color:#767678;flex-wrap:wrap}
 .metaDataInfo .metaDataInfo-group{display:flex;align-items:center;flex-wrap:wrap}
-.metaDataInfo .metaDataInfo-group:after{color:#c2c2c2;content:'•';margin:0 6px}
+.metaDataInfo .metaDataInfo-group:after{color:#c2c2c2;margin:0 6px}
 .metaDataInfo .metaDataInfo-group:last-child:after{content:''}
 .metaDataInfo .icon{display:flex;align-items:center;font-size:1.2rem}
 .taskItem.selected .metaDataInfo-group:after{color:#767678}
@@ -201,6 +201,27 @@ p{
   color: #808080;
   margin-top:20px;
   margin-right:5px;
+  text-align: center;
+}
+
+.icon20 {
+  padding: 10px;
+  background: transparent;
+  color: #008000;
+  text-align: center;
+}
+
+.icon21 {
+  padding: 10px;
+  background: transparent;
+  color: #ff0000;
+  text-align: center;
+}
+
+.icon22 {
+  padding: 10px;
+  background: transparent;
+  color: #ffff00;
   text-align: center;
 }
 

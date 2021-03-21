@@ -123,8 +123,11 @@ public class JDBC_Operations {
 			int count = 0;
 			while (rs.next()) 
     			count++;
-    		if(count==0)
+    		if(count==0) {
+    			rs.close();
+    			conn.close();
     			return false;
+    		}
     		rs.close();
 			conn.close();
 			return true;
@@ -147,16 +150,22 @@ public class JDBC_Operations {
     			count++;
     			encryptedText += rs.getString("security");
     		}
-    		if(count==0)
+    		if(count==0) {
+    			rs.close();
+    			conn.close();
     			return false;
+    		}
     		TrippleDES tripledes = new TrippleDES();
     		
     		String decrypted = tripledes.decrypt(encryptedText);
     		
     		String normalSecAns = noamalizeSecurityAnswer(secAns);
     		
-    		if(!decrypted.equalsIgnoreCase(normalSecAns))
+    		if(!decrypted.equalsIgnoreCase(normalSecAns)) {
+    			rs.close();
+    			conn.close();
     			return false;
+    		}
     		rs.close();
 			conn.close();
 			return true;

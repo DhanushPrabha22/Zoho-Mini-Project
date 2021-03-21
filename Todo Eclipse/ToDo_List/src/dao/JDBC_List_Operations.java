@@ -134,8 +134,11 @@ public class JDBC_List_Operations {
 			while (rs.next()){
 				count++;
     		}
-			if(count==0)
+			if(count==0) {
+				rs.close();
+				conn.close();
 				return true;
+			}
 			rs.close();
 			conn.close();
 		}catch(Exception e){

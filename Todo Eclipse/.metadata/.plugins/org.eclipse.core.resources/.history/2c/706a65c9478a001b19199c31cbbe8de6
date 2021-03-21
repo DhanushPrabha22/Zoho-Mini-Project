@@ -1,0 +1,29 @@
+<!--
+
+deletingTask.jsp
+
+java version "1.8.0_45"
+
+Created By Dhanush L
+                 
+-->
+
+<%@ page import="dao.*"%>
+<%@ page import="java.sql.*"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>To-Do</title>
+</head>
+<body>
+	<%=request.getParameter("userId") %><br>
+	<%=request.getParameter("taskId") %><br>
+	<%=request.getParameter("taskName") %><br>
+	<%=request.getParameter("pageId") %><br><br>
+	
+	<%=request.getParameter("subFlag") %><br>
+	<%=request.getParameter("dateFlag") %><br>
+	<%=request.getParameter("catFlag") %>
+</body>
+</html>

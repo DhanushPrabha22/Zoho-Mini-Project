@@ -1,6 +1,6 @@
 <!--
 
-myList.jsp
+UserTaskList.jsp
 
 java version "1.8.0_45"
 
@@ -12,6 +12,8 @@ Created By Dhanush L
 <%@ page import="dao.*"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.time.Period"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.text.DateFormat"%>
 <!DOCTYPE>
 <html>
 <head>
@@ -31,7 +33,11 @@ Created By Dhanush L
 	String currUser = (String) context.getAttribute("currUser");
 	int userId=-1, taskStatus, count=0, taskId=-1, importantStatus, flaggedStatus;
 	String taskName="", description="";
-	Date dateAdded;
+	java.sql.Date dateAdded;
+	java.util.Date toadyDate = new java.util.Date();
+	String dateFormatString = "EEE, MMM d, ''yy";
+    DateFormat dateFormat = new SimpleDateFormat(dateFormatString);
+    String currentDate = dateFormat.format(toadyDate);
 %>
 
 <header>
@@ -39,10 +45,10 @@ Created By Dhanush L
 	<nav class="navbar navbar-expand-md navbar-dark" style="background-image: linear-gradient(-225deg, #FFAB91 50%, #78909C 50%)">
 		<span style="font-size:30px; color: #818181; cursor:pointer" onclick="openNav()">&#9776;</span><br>
 		<div class="emailId" id="emailId">
-    		<a href="#" class="navbar-brand"><%=currUser%></a>
+    		<a class="navbar-brand" style="color:white;"><%=currUser%></a>
    		</div>
 		<ul class="navbar-nav">
-    		<li><a href="#" class="nav-link">Welcome</a></li>
+    		<li><a class="nav-link">Welcome</a></li>
     	</ul>
 		<ul class="navbar-nav navbar-collapse justify-content-end">
 			<li><a href="/ToDo_List/sign_in.jsp" class="nav-link">Logout</a></li>
@@ -53,15 +59,17 @@ Created By Dhanush L
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <br><br><br><br><br>
-  <a href="#">All Tasks</a>
-  <a href="#">Important Tasks</a>
-  <a href="#">Flagged Tasks</a>
+  <a style="color: #1565C0;">All Tasks</a>
+  <a href="importantTaskList.jsp">Important Tasks</a>
+  <a href="flaggedTaskList.jsp">Flagged Tasks</a>
   <a href="#">Planned</a>
+  <a href="#">Need Attention</a>
 </div>
 <div id="main">
 	<div>
 		<div class="container1" id="container1">
-			<h1>All Tasks</h1>
+			<h1 style="font-weight:bold;">All Tasks</h1>
+			<p><%=currentDate%></p>
 			<br>
 			<div>
 				<p><button class="w3-button w3-xlarge w3-circle w3-card-4" style="background-color:#818181;" id="myBtn">+</button>  Add Task...</p>
@@ -81,7 +89,7 @@ Created By Dhanush L
 								 "FROM task_id_table "+
 								 "INNER JOIN tasks_table ON "+
 						    	 "(task_id_table.user_id=? AND task_id_table.task_id=tasks_table.task_id) "+
-								 "ORDER BY date_added ASC";
+								 "ORDER BY task_name ASC;";
 					
 					PreparedStatement stmt = conn.prepareStatement(sql);
 					stmt.setInt(1, userId);
@@ -96,7 +104,22 @@ Created By Dhanush L
 						importantStatus = rs.getInt("important_status");
 						flaggedStatus = rs.getInt("flagged_status");
 						
-						ResultSet rs1, rs2, rs3;
+						int subFlag=0, dateFlag=0, catFlag=0;
+						
+						String repeatStatus="";
+						String[] categoryList, subTasksList;
+						java.sql.Date dueDate, remainderDate;
+						
+						JDBC_List_Dates_Operations jdbcDates = new JDBC_List_Dates_Operations();
+						JDBC_List_Flags_Operations jdbcCategory = new JDBC_List_Flags_Operations();
+						JDBC_List_SubTasks_Operations jdbcSubTasks = new JDBC_List_SubTasks_Operations();
+						
+						String[] rsDates = {"","",""};
+						String rsCategory = "", rsSubTask="";
+						
+						if(jdbcDates.isCheck_Task_Id(taskId)){
+							rsDates = jdbcDates.getDatesRecord(taskId);
+						}
 			%>
 					<div>
 					<div role="none">
@@ -124,35 +147,240 @@ Created By Dhanush L
 						</div>
 						<button tabindex="0" class="taskItem-titleWrapper" id="taskBtn<%=count%>" onclick="updateTask(this.id)">
 							<span class="taskItem-title">
+			<%
+						if(taskStatus==1){
+			%>
 								<span>
-									<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>">
-										<%=taskName%>
+									<span style='color:#000;text-decoration:line-through;'>
+										<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>">
+											<%=taskName%>
+										</span>
 									</span>
-									<span id="taskDateSpan<%=count%>">
-										| Created on <%=dateAdded%>
+			<%
+						}else{
+			%>
+									<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>">
+											<%=taskName%>
+									</span>
+								
+			<%
+						}
+			%>
+								<span style="margin-left:10px;">
+			<% 
+						if(jdbcSubTasks.isCheck_Task_Id(taskId)){
+							rsSubTask = jdbcSubTasks.getSubTaskRecord(taskId);
+							subTasksList = rsSubTask.split(",");
+							String sub = "";
+							subFlag++;
+							
+							for(int i=0; i<subTasksList.length; i++){
+								sub += subTasksList[i] + " ";
+			%>
+								<span style="margin:2px;border:1px solid black;border-radius:2px;font-weight:bold; color:#3F51B5; font-size:75%;">
+									<span style="font-size:70%; margin:1px">
+										<%=subTasksList[i]%>
+									</span>
+								</span>
+								
+			<%
+							}
+			%>
+							</span>
+								<span style="display:none;" id="subTaskSpan<%=count%>">
+									<%=sub%>
+								</span>
+			<%				
+						}else{
+			%>
+								<span>
+									<span style="display:none" id="subTaskSpan<%=count%>"></span>
+								</span>
+			<%
+						}
+			%>
+									<span style="margin-left:10px;" id="taskDateSpan<%=count%>">
+										Created on <%=dateAdded%>
 									</span>
 									<span id="taskIdSpan<%=count%>" style="visibility:hidden">
 										<%=taskId%>
 									</span>
 								</span>
 							</span>
-							<div class="metaDataInfo">
-								<span class="metaDataInfo-group">
-									<span>
-										<span style="font-size:70%">
-											<%=description%>
-										</span>
+							
+							<div class="metaDataInfo" style="margin-top:-8px;">
+			
+			<%
+					long millis = System.currentTimeMillis();  
+					java.sql.Date currDate = new java.sql.Date(millis); 
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
+					if(!rsDates[2].equals("")){
+						
+						try{
+							dateFlag++;
+							java.util.Date date = sdf.parse(rsDates[2]);
+							remainderDate = new java.sql.Date(date.getTime());
+						
+							int years=0, months=0, days=0;
+							Period age = Period.between(remainderDate.toLocalDate(), currDate.toLocalDate());
+							years = age.getYears(); 
+							months = age.getMonths();
+							days = age.getDays();
+							if(years<0 || months<0 || days<=0) {
+			%>
+								<div>
+                        			<i class="fa fa-bell icon20"></i>
+                        			<span id="remainderSpan<%=count%>" style="display:none">
+										<%=remainderDate%>
 									</span>
+								</div>
+			<%
+							}else{
+			%>
+								<div>
+                        			<i class="fa fa-bell icon21"></i>
+                        			<span id="remainderSpan<%=count%>" style="display:none">
+										<%=remainderDate%>
+									</span>
+								</div>
+								
+			<%
+							}
+						}catch(Exception e){
+							System.out.println(e);
+						}
+					}else{
+			%>
+								<div>
+                        			<span id="remainderSpan<%=count%>" style="display:none"></span>
+								</div>
+			<%
+					}
+					if(!rsDates[0].equals("")){
+						try{
+							dateFlag++;
+							java.util.Date date = sdf.parse(rsDates[0]);
+							dueDate = new java.sql.Date(date.getTime());
+						
+							int years=0, months=0, days=0;
+							Period age = Period.between(dueDate.toLocalDate(), currDate.toLocalDate());
+							years = age.getYears(); 
+							months = age.getMonths();
+							days = age.getDays();
+							if(years<0 || months<0 || days<=0) {
+			%>
+							<div>
+                        		<i class="fa fa-calendar icon20"></i>
+                        		<span id="dueSpan<%=count%>" style="display:none">
+									<%=dueDate%>
 								</span>
 							</div>
-							<div class="metaDataInfo">
-								<span class="metaDataInfo-group">
-									<span>
-										<span style="font-size:70%">
-											<%=description%> <%=description%>
-										</span>
-									</span>
+							
+			
+			<%
+							}else{
+			%>
+			
+							<div>
+                        		<i class="fa fa-calendar icon21"></i>
+                        		<span id="dueSpan<%=count%>" style="display:none">
+									<%=dueDate%>
 								</span>
+							</div>
+							
+			<%
+							}
+						}catch(Exception e){
+							System.out.println(e);
+						}
+					}else{
+			%>
+							<div>
+                        		<span id="dueSpan<%=count%>" style="display:none"></span>
+							</div>
+			<%
+					}
+					if(!rsDates[1].equals("")){
+						try{
+							dateFlag++;
+							repeatStatus += rsDates[1];
+			%>
+							<div>
+                        		<i class="fa fa-repeat icon20"></i>
+                        		<span id="repeat<%=count%>" style="margin-left:-12px;font-size:70%;color:#FFAB91">
+									<%=repeatStatus%>
+								</span>
+							</div>
+			<%
+						}catch(Exception e){
+							System.out.println(e);
+						}
+					}else{
+			%>
+							<div>
+                        		<span id="repeat<%=count%>" style="display:none"></span>
+							</div>
+			<%
+					}
+			%>
+							</div>
+							<div class="metaDataInfo" style="margin-top:-5px;">
+								
+								<div class="metaDataInfo">
+			<%
+					if(jdbcCategory.isCheck_Task_Id(taskId)){
+						rsCategory = jdbcCategory.getCategoryRecord(taskId);
+						categoryList = rsCategory.split(",");
+						String cat = "";
+						catFlag++;
+						
+						for(int i=0; i<categoryList.length; i++){
+							cat += categoryList[i] + " ";
+			%>
+									<div style="margin:2px;border:1px solid black;border-radius:2px;">
+										<span style="font-size:70%; margin:1px">
+											<%=categoryList[i]%>
+										</span>
+									</div>
+			<%
+						}
+						
+			%>
+									<span style="display:none" id="categorySpan<%=count%>">
+										<%=cat%>
+									</span>
+			<% 
+					}else{
+			%>					
+									<div>
+										<span style="display:none" id="categorySpan<%=count%>"></span>
+									</div>
+								</div>
+								
+								<div>
+			<%
+					}
+					if(!description.equals("")){
+			%>						
+									<div>
+										<i class="fa fa-file-text icon22"></i>
+										<span style="display:none" id="taskDescriptionSpan<%=count%>">
+											<%=description%>
+										</span>
+									</div>
+			<%
+					}else{
+			%>
+									<div>
+										<span style="display:none" id="taskDescriptionSpan<%=count%>">
+											<%=description%>
+										</span>
+									</div>
+			<%
+					}
+			%>
+								</div>
 							</div>
 						</button>
 			<%
@@ -190,6 +418,10 @@ Created By Dhanush L
 			<%
 						}
 			%>
+						<div style="margin-right:45px; margin-left:-20px;">
+							<i class="fa fa-trash" style="cursor: pointer;color:red;" id="deleteBox" onClick="deleteTask(<%=taskId%>, '<%=taskName%>', <%=subFlag%>, <%=dateFlag%>, <%=catFlag%>)"> Delete</i>
+						</div>
+						
 					</div>
 					</div>
 					</div>
@@ -212,6 +444,7 @@ Created By Dhanush L
 			<div class="details">
 				<div data-is-scrollable="true" class="details-body">
 					<form action="updatingTasks.jsp" method="post">
+						<input type="hidden" name="pageId" value="0"/>
 						<input type="hidden" name="userId" value="<%=userId%>"/>
 						<input type="text" style="visibility:hidden" name="taskId" id="taskId" required/>
 						<div class="detailHeader" style="border-radius:10px; margin-top:-25px;">
@@ -267,8 +500,8 @@ Created By Dhanush L
 						 	</div>
 						 </div>
 						<br>
-						<div class="detailHeader-titleWrapper" style="text-align:center">
-							<input type="submit" class="sign-up button1" value="Update"/>
+						<div style="text-align:center;">
+							<input type="submit" class="button1 sign-up" value="Update"/>
 						</div>
 					</form> 
 				</div>
@@ -280,9 +513,8 @@ Created By Dhanush L
 <div id="myModal" class="w3-modal">
   	<!-- Modal content -->
   	<div class="w3-modal-content w3-animate-top w3-card-4">
-    		<span class="close"></span>
       		<div class="field-set">
-				<html:form action="adding" method="post">
+				<html:form action="addingZero" method="post">
 				
 					<html:errors property="taskname_e"/><br>
 					<html:text styleClass="form-input1" property="taskName" styleId="taskName"/><br>
@@ -293,7 +525,27 @@ Created By Dhanush L
 					
 					<html:submit styleClass="sign-up button1" value="Add"/>
 				</html:form>
+				<button class="button1" style="background:transparent;" id="cancelAddTask">Cancel</button>
 			</div>
+  	</div>
+</div>
+
+<div id="deleteModal" class="w3-modal">
+  	<!-- Modal content -->
+  	<div class="w3-modal-content w3-animate-top w3-card-4">
+      	<div class="field-set">
+			<form action="deletingTask.jsp" method="post">
+				<input type="hidden" name="pageId" value="0"/>
+				<input type="hidden" name="userId" value="<%=userId%>"/>
+				<input type="hidden" name="taskId" id="taskIdDelete"/>
+				<input type="hidden" name="subFlag" id="subFlagDelete"/>
+				<input type="hidden" name="dateFlag" id="dateFlagDelete"/>
+				<input type="hidden" name="catFlag" id="catFlagDelete"/>
+				<input type="text" class="form-input1" style="width:175px;font-weight:bold;" id="taskNameDelete" name="taskName" readonly/><br><br>
+				<input type="submit" class="button1 sign-up" style="background-color:red;color:white;" value="DELETE"/>
+			</form>
+			<button class="button1" style="background:transparent;"  id="cancelDeleteTask">Cancel</button>
+		</div>
   	</div>
 </div>
 </body>

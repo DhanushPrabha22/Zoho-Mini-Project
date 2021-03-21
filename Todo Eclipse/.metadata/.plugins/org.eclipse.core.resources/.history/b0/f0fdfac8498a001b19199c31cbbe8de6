@@ -1,0 +1,55 @@
+<!--
+
+deletingTask.jsp
+
+java version "1.8.0_45"
+
+Created By Dhanush L
+                 
+-->
+
+<%@ page import="dao.*"%>
+<%@ page import="java.sql.*"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>To-Do</title>
+</head>
+<body>
+	<%=request.getParameter("userId") %><br>
+	<%=request.getParameter("taskId") %><br>
+	<%=request.getParameter("taskName") %><br>
+	<%=request.getParameter("pageId") %><br><br>
+	
+	<%=request.getParameter("subFlag") %><br>
+	<%=request.getParameter("dateFlag") %><br>
+	<%=request.getParameter("catFlag") %>
+	
+<% 	
+	int subFlag = Integer.parseInt(request.getParameter("subFlag"));
+	int dateFlag = Integer.parseInt(request.getParameter("dateFlag"));
+	int catFlag = Integer.parseInt(request.getParameter("catFlag"));
+	
+	int userId = Integer.parseInt(request.getParameter("userId"));
+	int taskId = Integer.parseInt(request.getParameter("taskId"));
+	int pageId = Integer.parseInt(request.getParameter("pageId"));
+	
+	if(userId!=-1){
+		if(subFlag!=0){
+		
+		}
+	
+		if(dateFlag!=0){
+		
+		}
+	
+		if(catFlag!=0){
+		
+		}
+	}
+		
+%>
+	
+</body>
+</html>

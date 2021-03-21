@@ -13,18 +13,40 @@ function closeNav() {
 window.onload = function(e){ 
 	var modal = document.getElementById("myModal");
 	var btn = document.getElementById("myBtn");
-	var span = document.getElementsByClassName("close")[0];
+	var cancel = document.getElementById("cancelAddTask");
 	btn.onclick = function() {
 		modal.style.display = "block";
 	}
-	span.onclick = function() {
-		modal.style.display = "none";
+	cancel.onclick = function() {
+		  modal.style.display = "none";
 	}
 	window.onclick = function(event) {
 		if (event.target == modal) {
 			modal.style.display = "none";
 		}
 	}
+}
+
+function deleteTask(taskId, taskName, subFlag, dateFlag, catFlag){
+	var deleteModal = document.getElementById("deleteModal");
+	var cancel = document.getElementById("cancelDeleteTask");
+	deleteModal.style.display = "block";
+	cancel.onclick = function() {
+		deleteModal.style.display = "none";
+	}
+	window.onclick = function(event) {
+		if (event.target == deleteModal) {
+			deleteModal.style.display = "none";
+		}
+	}
+	
+	$(function() {
+		$("#taskIdDelete").attr("value", taskId);
+		$("#taskNameDelete").attr("value", taskName);
+		$("#subFlagDelete").attr("value", subFlag);
+		$("#dateFlagDelete").attr("value", dateFlag);
+		$("#catFlagDelete").attr("value", catFlag);
+	});
 }
 
 function updateTask(id){
@@ -36,17 +58,33 @@ function updateTask(id){
 	var taskStatusId = "statusChk"+cId[1];
 	var impStatusId = "impStatusShow"+cId[1];
 	var flagStatusId = "flagStatusShow"+cId[1];
+	var descriptionId = "taskDescriptionSpan"+cId[1];
+	var remainderId = "remainderSpan"+cId[1];
+	var dueId = "dueSpan"+cId[1];
+	var repeatId = "repeat"+cId[1];
+	var categoryId = "categorySpan"+cId[1];
+	var subTaskId  = "subTaskSpan"+cId[1];
 	
 	var taskName = document.getElementById(spanId).innerHTML;
 	var taskId = document.getElementById(spanId2).innerHTML;
 	var taskStatus = document.getElementById(taskStatusId).value;
 	var impStatus = document.getElementById(impStatusId).value;
 	var flagStatus = document.getElementById(flagStatusId).value;
+	var taskDescription = document.getElementById(descriptionId).innerHTML;
+	var remainderDate = document.getElementById(remainderId).innerHTML;
+	var dueDate = document.getElementById(dueId).innerHTML;
+	var repeatStatus = document.getElementById(repeatId).innerHTML;
+	var category = document.getElementById(categoryId).innerHTML;
+	var subTask = document.getElementById(subTaskId).innerHTML;
 	
 	taskName = taskName.split(/\s/).join('');
 	taskId = taskId.split(/\s/).join('');
-	
-	console.log(taskStatus);
+	taskDescription = taskDescription.replace(/\s+/g,' ').trim();
+	remainderDate = remainderDate.split(/\s/).join('');
+	dueDate = dueDate.split(/\s/).join('');
+	repeatStatus = repeatStatus.split(/\s/).join('');
+	category = category.replace(/\s+/g,' ').trim();
+	subTask = subTask.replace(/\s+/g,' ').trim();
 	
 	$(function() {
 	    $("#taskNameF").attr("value", taskName);
@@ -58,14 +96,20 @@ function updateTask(id){
 	    }
 	    if(impStatus === 'on'){
 	    	$("#impStatus").prop("checked", true);
-	    }else if(taskStatus === 'off'){
+	    }else if(impStatus === 'off'){
 	    	$("#impStatus").prop("checked", false);
 	    }
 	    if(flagStatus === 'on'){
 	    	$("#flagStatus").prop("checked", true);
-	    }else if(taskStatus === 'off'){
+	    }else if(flagStatus === 'off'){
 	    	$("#flagStatus").prop("checked", false);
 	    }
+	    $("#descriptionF").attr("value", taskDescription);
+	    $("#remainder").attr("value", remainderDate);
+	    $("#dueDate").attr("value", dueDate);
+	    $("#repeat").attr("value", repeatStatus);
+	    $("#category").attr("value", category);
+	    $("#subTasks").attr("value", subTask);
 	});
 }
 
