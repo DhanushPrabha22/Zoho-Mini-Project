@@ -8,7 +8,7 @@ import dao.*;
 
 public class UserTaskListBean extends ActionForm {
 		
-		private String taskName, description;
+		private String taskName, description, userId;
 
 		public String getTaskName() {
 			return taskName;
@@ -26,6 +26,14 @@ public class UserTaskListBean extends ActionForm {
 			this.description = description;
 		}
 		
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
 		@Override
 		public void reset(ActionMapping mapping, HttpServletRequest request) {
 			taskName = "";
@@ -44,15 +52,12 @@ public class UserTaskListBean extends ActionForm {
 				
 				JDBC_List_Operations jdbc = new JDBC_List_Operations();
 				
-				ServletContext context = request.getSession().getServletContext();
-				String currUser = (String) context.getAttribute("currUser");
+				int userId1 = Integer.parseInt(userId);
 				
-				int userId = jdbc.getUserId(currUser);
-				
-				if(userId!=-1) {
-					if(jdbc.isCheckTaskName(userId, taskName)) {
-						jdbc.insertTaskId(userId, taskName);
-						int taskId = jdbc.getTaskId(userId, taskName);
+				if(userId1!=-1) {
+					if(jdbc.isCheckTaskName(userId1, taskName)) {
+						jdbc.insertTaskId(userId1, taskName);
+						int taskId = jdbc.getTaskId(userId1, taskName);
 						jdbc.insertTaskDetails(taskId, description);
 					}else {
 						ae.add("taskname_e", new ActionMessage("msg9")); 

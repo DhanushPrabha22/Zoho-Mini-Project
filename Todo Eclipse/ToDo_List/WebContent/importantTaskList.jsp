@@ -31,18 +31,15 @@ Created By Dhanush L
 <%
 	ServletContext context = request.getSession().getServletContext();
 	String currUser = (String) context.getAttribute("currUser");
-	int userId=-1, taskStatus, count=0, taskId=-1, importantStatus, flaggedStatus;
-	String taskName="", description="";
-	java.sql.Date dateAdded;
 	java.util.Date toadyDate = new java.util.Date();
 	String dateFormatString = "EEE, MMM d, ''yy";
-    DateFormat dateFormat = new SimpleDateFormat(dateFormatString);
-    String currentDate = dateFormat.format(toadyDate);
+    DateFormat dateFormatM = new SimpleDateFormat(dateFormatString);
+    String currentDate = dateFormatM.format(toadyDate);
 %>
 
 <header>
 	
-	<nav class="navbar navbar-expand-md navbar-dark" style="background-image: linear-gradient(-225deg, #FFC107 50%, #78909C 50%)">
+	<nav class="navbar navbar-expand-md navbar-dark" style="background-image: linear-gradient(-225deg, #FFF176 50%, #78909C 50%)">
 		<span style="font-size:30px; color: #818181; cursor:pointer" onclick="openNav()">&#9776;</span><br>
 		<div class="emailId" id="emailId">
     		<a class="navbar-brand" style="color:white;"><%=currUser%></a>
@@ -56,23 +53,36 @@ Created By Dhanush L
 	</nav>
 </header>
 
-<div id="mySidenav" class="sidenav" style="background-image: linear-gradient(-225deg, #FFC107 65%, #78909C 35%);">
+<div id="mySidenav" class="sidenav" style="background-image: linear-gradient(-225deg, #FFF176 65%, #78909C 35%);">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <br><br><br><br><br>
   <a href="UserTaskList.jsp">All Tasks</a>
   <a style="color: #1565C0;">Important Tasks</a>
   <a href="flaggedTaskList.jsp">Flagged Tasks</a>
-  <a href="#">Planned</a>
+  <a href="PlannedTaskList.jsp">Planned</a>
   <a href="#">Need Attention</a>
+  <div  class="sidenavin metaDataInfo" style="margin:8px;">
+  	<div>
+     	<i class="fa fa-calendar"></i>
+	</div>
+	<div>
+       	<i class="fa fa-calendar"></i>
+	</div>
+	<div>
+       	<i class="fa fa-calendar"></i>
+	</div>
+	<div>
+       	<i class="fa fa-calendar"></i>
+	</div>
+  </div>
 </div>
 <div id="main">
 	<div>
 		<div class="container1" id="container1">
-			<h1 style="font-weight:bold;color:#FFC107;">Important Tasks</h1>
-			<p style="color:#FFC107;"><%=currentDate%></p>
-			<br>
+			<h1 style="font-weight:bold;color:#FFF176;">Important Tasks</h1>
+			<p style="color:#FFF176;"><%=currentDate%></p>
 			<div>
-				<p style="color:#FFC107;"><button class="w3-button w3-xlarge w3-circle w3-card-4" style="background-color:#818181;" id="myBtn">+</button>  Add Task...</p>
+				<p style="color:#FFF176;"><button class="w3-button w3-xlarge w3-circle w3-card-4" style="background-color:#818181;" id="myBtn">+</button>  Add Task...</p>
 			</div>
 			<div class="taskDiv">
 			<div class="chunkedComponentList sticky">
@@ -81,14 +91,27 @@ Created By Dhanush L
 				JDBC_List_Operations jdbc = new JDBC_List_Operations();
 				Connection conn = jdbc.getConnection();
 				
+				int userId=-1, taskStatus, count=0, taskId=-1, importantStatus, flaggedStatus;
+				String taskName="", description="", repeatStatus="";
+				String[] categoryList={}, subTasksList={};
+				java.sql.Date dateAdded=null, dueDate=null, remainderDate=null;
+				
 				userId = jdbc.getUserId(currUser);
+				
+				if(userId!=-1){
 				
 				try{
 					
-					String sql = "SELECT task_id_table.task_id, task_name, description, date_added, task_status, important_status, flagged_status "+
-								 "FROM task_id_table "+
-								 "INNER JOIN tasks_table ON "+
-						    	 "(task_id_table.user_id=? AND task_id_table.task_id=tasks_table.task_id AND tasks_table.important_status=1) "+
+					String sql = "SELECT  task_id_table.task_id, task_name, description, date_added, task_status, important_status, "+
+								 "flagged_status, due_date, repeat_status, remainder_date, subtask_list, category_list "+
+								 "FROM task_id_table INNER JOIN tasks_table ON "+
+								 "(task_id_table.user_id = ? AND task_id_table.task_id = tasks_table.task_id AND tasks_table.important_status=1) "+
+								 "LEFT JOIN task_dates ON "+
+						    	 "(task_dates.task_id = task_id_table.task_id) "+
+						    	 "LEFT JOIN subtasks_table ON "+
+						    	 "(subtasks_table.task_id = task_id_table.task_id) "+
+						    	 "LEFT JOIN category_table ON "+
+						    	 "(category_table.task_id = task_id_table.task_id) "+
 								 "ORDER BY task_name ASC;";
 					
 					PreparedStatement stmt = conn.prepareStatement(sql);
@@ -96,6 +119,7 @@ Created By Dhanush L
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()){
 						count++;
+						
 						taskId = rs.getInt("task_id");
 						taskName = rs.getString("task_name");
 						description = rs.getString("description");
@@ -105,20 +129,58 @@ Created By Dhanush L
 						flaggedStatus = rs.getInt("flagged_status");
 						
 						int subFlag=0, dateFlag=0, catFlag=0;
-						
-						String repeatStatus="";
-						String[] categoryList, subTasksList;
-						java.sql.Date dueDate, remainderDate;
-						
-						JDBC_List_Dates_Operations jdbcDates = new JDBC_List_Dates_Operations();
-						JDBC_List_Flags_Operations jdbcCategory = new JDBC_List_Flags_Operations();
-						JDBC_List_SubTasks_Operations jdbcSubTasks = new JDBC_List_SubTasks_Operations();
-						
 						String[] rsDates = {"","",""};
 						String rsCategory = "", rsSubTask="";
 						
-						if(jdbcDates.isCheck_Task_Id(taskId)){
-							rsDates = jdbcDates.getDatesRecord(taskId);
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						
+						//Remainder Date
+						try{
+							remainderDate = rs.getDate("remainder_date");
+							rsDates[0] = dateFormat.format(remainderDate);  
+							dateFlag++;
+						}catch(Exception e){
+							rsDates[0] = "";
+						}
+						//Due Date
+						try{
+							dueDate = rs.getDate("due_date");
+							rsDates[1] = dateFormat.format(dueDate);  
+							dateFlag++;
+						}catch(Exception e){
+							rsDates[1] = "";
+						}
+						//Repeat Status
+						try{
+							repeatStatus = rs.getString("repeat_status");
+							if(repeatStatus!=null){
+								rsDates[2] = repeatStatus;
+								dateFlag++;
+							}
+							else
+								rsDates[2] = "";
+						}catch(Exception e){
+							rsDates[2] = "";
+						}
+						
+						//SubTasks List
+						try{
+							rsSubTask = rs.getString("subtask_list");
+							if(rsSubTask!=null){
+								subTasksList = rsSubTask.split(",");
+								subFlag++;
+							}	
+						}catch(Exception e){
+						}
+						
+						//Category List
+						try{
+							rsCategory = rs.getString("category_list");
+							if(rsCategory!=null){
+								categoryList = rsCategory.split(",");
+								catFlag++;
+							}
+						}catch(Exception e){
 						}
 			%>
 					<div>
@@ -152,44 +214,31 @@ Created By Dhanush L
 			%>
 								<span>
 									<span style='color:#000;text-decoration:line-through;'>
-										<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>">
-											<%=taskName%>
-										</span>
+										<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>"><%=taskName%></span>
 									</span>
 			<%
 						}else{
 			%>
-									<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>">
-											<%=taskName%>
-									</span>
-								
+									<span style="font-weight:bold; color:#3F51B5; font-size:135%" id="taskNameSpan<%=count%>"><%=taskName%></span>
 			<%
 						}
 			%>
 								<span style="margin-left:10px;">
 			<% 
-						if(jdbcSubTasks.isCheck_Task_Id(taskId)){
-							rsSubTask = jdbcSubTasks.getSubTaskRecord(taskId);
-							subTasksList = rsSubTask.split(",");
+						if(subFlag!=0){
 							String sub = "";
-							subFlag++;
-							
 							for(int i=0; i<subTasksList.length; i++){
 								sub += subTasksList[i] + " ";
 			%>
 								<span style="margin:2px;border:1px solid black;border-radius:2px;font-weight:bold; color:#3F51B5; font-size:75%;">
-									<span style="font-size:70%; margin:1px">
-										<%=subTasksList[i]%>
-									</span>
+									<span style="font-size:70%; margin:1px"><%=subTasksList[i]%></span>
 								</span>
 								
 			<%
 							}
 			%>
 							</span>
-								<span style="display:none;" id="subTaskSpan<%=count%>">
-									<%=sub%>
-								</span>
+								<span style="display:none;" id="subTaskSpan<%=count%>"><%=sub%></span>
 			<%				
 						}else{
 			%>
@@ -199,29 +248,21 @@ Created By Dhanush L
 			<%
 						}
 			%>
-									<span style="margin-left:10px;" id="taskDateSpan<%=count%>">
-										Created on <%=dateAdded%>
-									</span>
-									<span id="taskIdSpan<%=count%>" style="visibility:hidden">
-										<%=taskId%>
-									</span>
+									<span style="margin-left:10px;" id="taskDateSpan<%=count%>">Created on <%=dateAdded%></span>
+									<span id="taskIdSpan<%=count%>" style="visibility:hidden"><%=taskId%></span>
 								</span>
 							</span>
 							
-							<div class="metaDataInfo" style="margin-top:-8px;">
-			
+							<div class="metaDataInfo" style="margin-top:-8px;margin-bottom:-8px;">
 			<%
 					long millis = System.currentTimeMillis();  
 					java.sql.Date currDate = new java.sql.Date(millis); 
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
-					if(!rsDates[2].equals("")){
+					if(!rsDates[0].equals("")){
 						
 						try{
-							dateFlag++;
-							java.util.Date date = sdf.parse(rsDates[2]);
-							remainderDate = new java.sql.Date(date.getTime());
-						
+							java.util.Date date = sdf.parse(rsDates[0]);
 							int years=0, months=0, days=0;
 							Period age = Period.between(remainderDate.toLocalDate(), currDate.toLocalDate());
 							years = age.getYears(); 
@@ -231,20 +272,15 @@ Created By Dhanush L
 			%>
 								<div>
                         			<i class="fa fa-bell icon20"></i>
-                        			<span id="remainderSpan<%=count%>" style="display:none">
-										<%=remainderDate%>
-									</span>
+                        			<span id="remainderSpan<%=count%>" style="display:none"><%=remainderDate%></span>
 								</div>
 			<%
 							}else{
 			%>
 								<div>
                         			<i class="fa fa-bell icon21"></i>
-                        			<span id="remainderSpan<%=count%>" style="display:none">
-										<%=remainderDate%>
-									</span>
+                        			<span id="remainderSpan<%=count%>" style="display:none"><%=remainderDate%></span>
 								</div>
-								
 			<%
 							}
 						}catch(Exception e){
@@ -257,12 +293,9 @@ Created By Dhanush L
 								</div>
 			<%
 					}
-					if(!rsDates[0].equals("")){
+					if(!rsDates[1].equals("")){
 						try{
-							dateFlag++;
-							java.util.Date date = sdf.parse(rsDates[0]);
-							dueDate = new java.sql.Date(date.getTime());
-						
+							java.util.Date date = sdf.parse(rsDates[1]);
 							int years=0, months=0, days=0;
 							Period age = Period.between(dueDate.toLocalDate(), currDate.toLocalDate());
 							years = age.getYears(); 
@@ -272,23 +305,15 @@ Created By Dhanush L
 			%>
 							<div>
                         		<i class="fa fa-calendar icon20"></i>
-                        		<span id="dueSpan<%=count%>" style="display:none">
-									<%=dueDate%>
-								</span>
+                        		<span id="dueSpan<%=count%>" style="display:none"><%=dueDate%></span>
 							</div>
-							
-			
 			<%
 							}else{
 			%>
-			
 							<div>
                         		<i class="fa fa-calendar icon21"></i>
-                        		<span id="dueSpan<%=count%>" style="display:none">
-									<%=dueDate%>
-								</span>
+                        		<span id="dueSpan<%=count%>" style="display:none"><%=dueDate%></span>
 							</div>
-							
 			<%
 							}
 						}catch(Exception e){
@@ -301,21 +326,13 @@ Created By Dhanush L
 							</div>
 			<%
 					}
-					if(!rsDates[1].equals("")){
-						try{
-							dateFlag++;
-							repeatStatus += rsDates[1];
+					if(!rsDates[2].equals("")){
 			%>
 							<div>
                         		<i class="fa fa-repeat icon20"></i>
-                        		<span id="repeat<%=count%>" style="margin-left:-12px;font-size:70%;color:#FFAB91">
-									<%=repeatStatus%>
-								</span>
+                        		<span id="repeat<%=count%>" style="margin-left:-12px;font-size:70%;color:#FFAB91"><%=repeatStatus%></span>
 							</div>
 			<%
-						}catch(Exception e){
-							System.out.println(e);
-						}
 					}else{
 			%>
 							<div>
@@ -325,31 +342,23 @@ Created By Dhanush L
 					}
 			%>
 							</div>
-							<div class="metaDataInfo" style="margin-top:-5px;">
+							<div class="metaDataInfo" style="margin-top:10px;">
 								
 								<div class="metaDataInfo">
 			<%
-					if(jdbcCategory.isCheck_Task_Id(taskId)){
-						rsCategory = jdbcCategory.getCategoryRecord(taskId);
-						categoryList = rsCategory.split(",");
+					if(catFlag!=0){
 						String cat = "";
-						catFlag++;
-						
 						for(int i=0; i<categoryList.length; i++){
 							cat += categoryList[i] + " ";
 			%>
 									<div style="margin:2px;border:1px solid black;border-radius:2px;">
-										<span style="font-size:70%; margin:1px">
-											<%=categoryList[i]%>
-										</span>
+										<span style="font-size:70%; margin:1px"><%=categoryList[i]%></span>
 									</div>
 			<%
 						}
 						
 			%>
-									<span style="display:none" id="categorySpan<%=count%>">
-										<%=cat%>
-									</span>
+									<span style="display:none" id="categorySpan<%=count%>"><%=cat%></span>
 			<% 
 					}else{
 			%>					
@@ -357,7 +366,6 @@ Created By Dhanush L
 										<span style="display:none" id="categorySpan<%=count%>"></span>
 									</div>
 								</div>
-								
 								<div>
 			<%
 					}
@@ -365,17 +373,13 @@ Created By Dhanush L
 			%>						
 									<div>
 										<i class="fa fa-file-text icon22"></i>
-										<span style="display:none" id="taskDescriptionSpan<%=count%>">
-											<%=description%>
-										</span>
+										<span style="display:none" id="taskDescriptionSpan<%=count%>"><%=description%></span>
 									</div>
 			<%
 					}else{
 			%>
 									<div>
-										<span style="display:none" id="taskDescriptionSpan<%=count%>">
-											<%=description%>
-										</span>
+										<span style="display:none" id="taskDescriptionSpan<%=count%>"></span>
 									</div>
 			<%
 					}
@@ -421,7 +425,6 @@ Created By Dhanush L
 						<div style="margin-right:45px; margin-left:-20px;">
 							<i class="fa fa-trash" style="cursor: pointer;color:red;" id="deleteBox" onClick="deleteTask(<%=taskId%>, '<%=taskName%>', <%=subFlag%>, <%=dateFlag%>, <%=catFlag%>)"> Delete</i>
 						</div>
-						
 					</div>
 					</div>
 					</div>
@@ -433,6 +436,9 @@ Created By Dhanush L
 				}catch(Exception e){
 					System.out.println(e);
 				}
+			}else{
+				response.sendRedirect("/ToDo_List/");
+			}
 			%>
 			</div>
 			</div>
@@ -441,7 +447,7 @@ Created By Dhanush L
 		</div>
 		
 		<div class="container2">
-			<div class="details" style="background:#FFC107;">
+			<div class="details"  style="background:#FFF176;">
 				<div data-is-scrollable="true" class="details-body">
 					<form action="updatingTasks.jsp" method="post">
 						<input type="hidden" name="pageId" value="1"/>
@@ -516,6 +522,8 @@ Created By Dhanush L
       		<div class="field-set">
 				<html:form action="addingOne" method="post">
 				
+					<html:hidden property="userId" styleId="userId" value="<%=String.valueOf(userId)%>"/>
+					
 					<html:errors property="taskname_e"/><br>
 					<html:text styleClass="form-input1" property="taskName" styleId="taskName"/><br>
 					

@@ -165,6 +165,8 @@ Created By Dhanush L
 			response.sendRedirect("importantTaskList.jsp");
 		else if(pageId==2)
 			response.sendRedirect("flaggedTaskList.jsp");
+		else if(pageId==3)
+			response.sendRedirect("PlannedTaskList.jsp");
 	%>
 	
 </body>

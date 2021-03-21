@@ -1,0 +1,35 @@
+<struts-config>
+	
+	<form-beans>
+		<form-bean name="SignInForm" type="formbeans.SignInBean" />
+		<form-bean name="ForgotPwd" type="formbeans.ForgotPwdBean" />
+		<form-bean name="SignUpForm" type="formbeans.SignUpBean" />
+		<form-bean name="AddTaskFormZero" type="formbeans.UserTaskListBean" />
+		<form-bean name="AddTaskFormOne" type="formbeans.UserTaskListBean" />
+		<form-bean name="AddTaskFormTwo" type="formbeans.UserTaskListBean" />
+	</form-beans>
+	
+	<action-mappings>
+		<action attribute="SignInForm" name="SignInForm" path="/signingin" scope="session" validate="true" input="/sign_in.jsp" type="actioncontrollers.SignInController">
+			<forward name="success" path="/UserTaskList.jsp" />
+		</action>
+		<action attribute="ForgotPwd" name="ForgotPwd" path="/forgotpwd" scope="session" validate="true" input="/forgotPwd.jsp" type="actioncontrollers.ForgotPwdController">
+			<forward name="success" path="/sign_in.jsp" />
+		</action>
+		<action attribute="SignUpForm" name="SignUpForm" path="/signingup" scope="session" validate="true" input="/sign_up.jsp" type="actioncontrollers.SignUpController">
+			<forward name="success" path="/sign_in.jsp" />
+		</action>
+		<action attribute="AddTaskFormZero" name="AddTaskFormZero" path="/addingZero" scope="session" validate="true" input="/UserTaskList.jsp" type="actioncontrollers.UserTaskListController">
+			<forward name="success" path="/UserTaskList.jsp" />
+		</action>
+		<action attribute="AddTaskFormOne" name="AddTaskFormOne" path="/addingOne" scope="session" validate="true" input="/importantTaskList.jsp" type="actioncontrollers.UserTaskListController">
+			<forward name="success" path="/importantTaskList.jsp" />
+		</action>
+		<action attribute="AddTaskFormTwo" name="AddTaskFormTwo" path="/addingTwo" scope="session" validate="true" input="/flaggedTaskList.jsp" type="actioncontrollers.UserTaskListController">
+			<forward name="success" path="/flaggedTaskList.jsp" />
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="Messages"/>
+	
+</struts-config>

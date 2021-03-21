@@ -82,6 +82,11 @@ button.taskItem-titleWrapper{border:none; background:transparent; margin-left:16
   padding-top: 60px;
 }
 
+.sidenavin{
+	position: absolute;
+    bottom: 0;
+}
+
 .sidenav a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
