@@ -214,3 +214,5 @@ Caused by: org.eclipse.aether.transfer.ArtifactNotFoundException: Could not find
 	... 8 common frames omitted
 2021-03-22 09:10:10,337 [Worker-5] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
 2021-03-22 13:41:37,159 [Worker-6] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
+2021-03-22 15:20:37,126 [Worker-1] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2021-03-22 16:14:17,975 [Worker-4] INFO  c.g.t.t.d.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.

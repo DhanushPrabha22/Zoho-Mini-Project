@@ -17,15 +17,6 @@ Created By Dhanush L
 <title>To-Do</title>
 </head>
 <body>
-	<%=request.getParameter("userId") %><br>
-	<%=request.getParameter("taskId") %><br>
-	<%=request.getParameter("taskName") %><br>
-	<%=request.getParameter("pageId") %><br><br>
-	
-	<%=request.getParameter("subFlag") %><br>
-	<%=request.getParameter("dateFlag") %><br>
-	<%=request.getParameter("catFlag") %>
-	
 <% 	
 	int subFlag = Integer.parseInt(request.getParameter("subFlag"));
 	int dateFlag = Integer.parseInt(request.getParameter("dateFlag"));
@@ -33,7 +24,6 @@ Created By Dhanush L
 	
 	int userId = Integer.parseInt(request.getParameter("userId"));
 	int taskId = Integer.parseInt(request.getParameter("taskId"));
-	int pageId = Integer.parseInt(request.getParameter("pageId"));
 	
 	if(userId!=-1){
 		
@@ -53,17 +43,7 @@ Created By Dhanush L
 		
 		jdbcDelete.deleteTaskRecord(taskId);
 		jdbcDelete.deleteTaskIdRecord(taskId);
-		
-		if(pageId==0)
-			response.sendRedirect("UserTaskList.jsp");
-		else if(pageId==1)
-			response.sendRedirect("importantTaskList.jsp");
-		else if(pageId==2)
-			response.sendRedirect("flaggedTaskList.jsp");
-		else if(pageId==3)
-			response.sendRedirect("PlannedTaskList.jsp");
-		else if(pageId==4)
-			response.sendRedirect("NeedAttentionTasks.jsp");
+		response.sendRedirect("UserTaskList.jsp");
 	}
 		
 %>

@@ -12,6 +12,7 @@ public class SignInController extends Action  {
 		String email = request.getParameter("email");
 		ServletContext context = request.getSession().getServletContext();
 		context.setAttribute("currUser", email );
+		context.setAttribute("pageId", 0 );
 		form.reset(mapping,request);
 		return mapping.findForward("success");
 	}

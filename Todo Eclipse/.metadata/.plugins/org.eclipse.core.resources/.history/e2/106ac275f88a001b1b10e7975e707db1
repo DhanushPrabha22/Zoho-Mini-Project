@@ -1,0 +1,45 @@
+package dao;
+
+public class SqlQueryUtils {
+
+	private String query1, query2, query3, query4, query5;
+	
+	query1 = "SELECT  task_id_table.task_id, task_name, description, date_added, task_status, important_status, "+
+			 "flagged_status, due_date, repeat_status, remainder_date, subtask_list, category_list "+
+			 "FROM task_id_table INNER JOIN tasks_table ON "+
+			 "(task_id_table.user_id = ? AND task_id_table.task_id = tasks_table.task_id) "+
+			 "LEFT JOIN task_dates ON "+
+	    	 "(task_dates.task_id = task_id_table.task_id) "+
+	    	 "LEFT JOIN subtasks_table ON "+
+	    	 "(subtasks_table.task_id = task_id_table.task_id) "+
+	    	 "LEFT JOIN category_table ON "+
+	    	 "(category_table.task_id = task_id_table.task_id) "+
+			 "ORDER BY task_name ASC;";
+	
+	query2 = "SELECT  task_id_table.task_id, task_name, description, date_added, task_status, important_status, "+
+			 "flagged_status, due_date, repeat_status, remainder_date, subtask_list, category_list "+
+			 "FROM task_id_table INNER JOIN tasks_table ON "+
+			 "(task_id_table.user_id = ? AND task_id_table.task_id = tasks_table.task_id AND tasks_table.important_status=1) "+
+			 "LEFT JOIN task_dates ON "+
+	    	 "(task_dates.task_id = task_id_table.task_id) "+
+	    	 "LEFT JOIN subtasks_table ON "+
+	    	 "(subtasks_table.task_id = task_id_table.task_id) "+
+	    	 "LEFT JOIN category_table ON "+
+	    	 "(category_table.task_id = task_id_table.task_id) "+
+			 "ORDER BY task_name ASC;";
+	
+	query3 = "SELECT  task_id_table.task_id, task_name, description, date_added, task_status, important_status, "+
+			 "flagged_status, due_date, repeat_status, remainder_date, subtask_list, category_list "+
+			 "FROM task_id_table INNER JOIN tasks_table ON "+
+			 "(task_id_table.user_id = ? AND task_id_table.task_id = tasks_table.task_id AND tasks_table.flagged_status=1) "+
+			 "LEFT JOIN task_dates ON "+
+	    	 "(task_dates.task_id = task_id_table.task_id) "+
+	    	 "LEFT JOIN subtasks_table ON "+
+	    	 "(subtasks_table.task_id = task_id_table.task_id) "+
+	    	 "LEFT JOIN category_table ON "+
+	    	 "(category_table.task_id = task_id_table.task_id) "+
+			 "ORDER BY task_name ASC;";
+	
+	
+	
+}

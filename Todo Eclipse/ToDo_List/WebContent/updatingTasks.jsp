@@ -156,19 +156,7 @@ Created By Dhanush L
 					jdbcDates.deleteDatesRecord(taskId);
 			}
 		}
-		
-		int pageId = Integer.parseInt(request.getParameter("pageId"));
-		
-		if(pageId==0)
-			response.sendRedirect("UserTaskList.jsp");
-		else if(pageId==1)
-			response.sendRedirect("importantTaskList.jsp");
-		else if(pageId==2)
-			response.sendRedirect("flaggedTaskList.jsp");
-		else if(pageId==3)
-			response.sendRedirect("PlannedTaskList.jsp");
-		else if(pageId==4)
-			response.sendRedirect("NeedAttentionTasks.jsp");
+		response.sendRedirect("UserTaskList.jsp");
 	%>
 	
 </body>

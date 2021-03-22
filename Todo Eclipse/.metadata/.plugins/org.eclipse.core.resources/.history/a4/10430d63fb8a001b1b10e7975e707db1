@@ -1,0 +1,15 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>To-Do</title>
+</head>
+<body>
+<%=request.getParameter("pageId") %>
+<%
+	int pageId = Integer.parseInt(request.getParameter("pageId"));
+	ServletContext context = request.getSession().getServletContext();
+	context.setAttribute("pageId", pageId);
+%>
+</body>
+</html>
