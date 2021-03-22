@@ -8,6 +8,7 @@
 		<form-bean name="AddTaskFormOne" type="formbeans.UserTaskListBean" />
 		<form-bean name="AddTaskFormTwo" type="formbeans.UserTaskListBean" />
 		<form-bean name="AddTaskFormThree" type="formbeans.UserTaskListBean" />
+		<form-bean name="AddTaskFormFour" type="formbeans.UserTaskListBean" />
 	</form-beans>
 	
 	<action-mappings>
@@ -31,6 +32,9 @@
 		</action>
 		<action attribute="AddTaskFormThree" name="AddTaskFormThree" path="/addingThree" scope="session" validate="true" input="/PlannedTaskList.jsp" type="actioncontrollers.UserTaskListController">
 			<forward name="success" path="/PlannedTaskList.jsp" />
+		</action>
+		<action attribute="AddTaskFormFour" name="AddTaskFormFour" path="/addingFour" scope="session" validate="true" input="/NeedAttentionTasks.jsp" type="actioncontrollers.UserTaskListController">
+			<forward name="success" path="/NeedAttentionTasks.jsp" />
 		</action>
 	</action-mappings>
 	

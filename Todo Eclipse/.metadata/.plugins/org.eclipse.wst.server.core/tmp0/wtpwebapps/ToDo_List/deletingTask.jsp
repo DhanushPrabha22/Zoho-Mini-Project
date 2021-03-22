@@ -62,6 +62,8 @@ Created By Dhanush L
 			response.sendRedirect("flaggedTaskList.jsp");
 		else if(pageId==3)
 			response.sendRedirect("PlannedTaskList.jsp");
+		else if(pageId==4)
+			response.sendRedirect("NeedAttentionTasks.jsp");
 	}
 		
 %>

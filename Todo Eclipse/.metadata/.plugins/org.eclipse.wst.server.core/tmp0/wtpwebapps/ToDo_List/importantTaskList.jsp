@@ -60,7 +60,7 @@ Created By Dhanush L
   <a style="color: #1565C0;">Important Tasks</a>
   <a href="flaggedTaskList.jsp">Flagged Tasks</a>
   <a href="PlannedTaskList.jsp">Planned</a>
-  <a href="#">Need Attention</a>
+  <a href="NeedAttentionTasks.jsp">Need Attention</a>
   <div  class="sidenavin metaDataInfo" style="margin:8px;">
   	<div>
      	<i class="fa fa-calendar"></i>

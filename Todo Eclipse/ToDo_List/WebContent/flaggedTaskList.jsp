@@ -1,6 +1,6 @@
 <!--
 
-importantTaskList.jsp
+flaggedTaskList.jsp
 
 java version "1.8.0_45"
 
@@ -60,7 +60,7 @@ Created By Dhanush L
   <a href="importantTaskList.jsp">Important Tasks</a>
   <a style="color: #1565C0;">Flagged Tasks</a>
   <a href="PlannedTaskList.jsp">Planned</a>
-  <a href="#">Need Attention</a>
+  <a href="NeedAttentionTasks.jsp">Need Attention</a>
   <div  class="sidenavin metaDataInfo" style="margin:8px;">
   	<div>
      	<i class="fa fa-calendar"></i>
