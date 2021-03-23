@@ -44,34 +44,41 @@ public class JDBC_List_Flags_Operations {
 	}
 	
 	
-	public void insertFlagRecord(int taskId, String categoryList) {
+	public void insertFlagRecord(int taskId, String[] categoryList) {
 		try {
 			Connection conn = getConnection();
 			
-			String sql = "INSERT INTO category_table(task_id, category_list) VALUES(?,?);";
-			PreparedStatement stmt = conn.prepareStatement(sql);
+			for(String i: categoryList) {
+				String sql = "INSERT INTO category_table(task_id, category_list) VALUES(?,?);";
+				PreparedStatement stmt = conn.prepareStatement(sql);
 			
-			stmt.setInt(1, taskId);
-			stmt.setString(2, categoryList);
+				stmt.setInt(1, taskId);
+				stmt.setString(2,  i);
 			
-			stmt.executeUpdate();
+				stmt.executeUpdate();
+			}
 			conn.close();
 		}catch(Exception e){
 			System.out.println(e);
 		}
 	}
 	
-	public void updateFlagRecord(int taskId, String categoryList) {
+	public void updateFlagRecord(int taskId, String[] categoryList) {
 		try {
+			
+			deleteFlagRecord(taskId);
+			
 			Connection conn = getConnection();
 			
-			String sql = "UPDATE category_table SET category_list=? WHERE task_id=?;";
-			PreparedStatement stmt = conn.prepareStatement(sql);
+			for(String i: categoryList) {
+				String sql = "INSERT INTO category_table(task_id, category_list) VALUES(?,?);";
+				PreparedStatement stmt = conn.prepareStatement(sql);
 			
-			stmt.setString(1, categoryList);
-			stmt.setInt(2, taskId);
+				stmt.setInt(1, taskId);
+				stmt.setString(2,  i);
 			
-			stmt.executeUpdate();
+				stmt.executeUpdate();
+			}
 			conn.close();
 			
 		}catch(Exception e){
@@ -110,7 +117,7 @@ public class JDBC_List_Flags_Operations {
 			stmt.setInt(1, taskId);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
-				category += rs.getString("category_list");
+				category += rs.getString("category_list")+",";
 			}
 			rs.close();
 			conn.close();

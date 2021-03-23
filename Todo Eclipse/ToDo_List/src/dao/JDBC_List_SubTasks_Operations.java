@@ -45,17 +45,19 @@ public class JDBC_List_SubTasks_Operations {
 	}
 	
 	
-	public void insertSubTaskRecord(int taskId, String subTasks) {
+	public void insertSubTaskRecord(int taskId, String[] subTasks) {
 		try {
 			Connection conn = getConnection();
 			
-			String sql = "INSERT INTO subtasks_table(task_id, subtask_list) VALUES(?,?);";
-			PreparedStatement stmt = conn.prepareStatement(sql);
+			for(String i:subTasks) {
+				String sql = "INSERT INTO subtasks_table(task_id, subtask_list) VALUES(?,?);";
+				PreparedStatement stmt = conn.prepareStatement(sql);
 			
-			stmt.setInt(1, taskId);
-			stmt.setString(2, subTasks);
+				stmt.setInt(1, taskId);
+				stmt.setString(2, i);
 			
-			stmt.executeUpdate();
+				stmt.executeUpdate();
+			}
 			conn.close();
 		}catch(Exception e){
 			System.out.println(e);
@@ -63,17 +65,22 @@ public class JDBC_List_SubTasks_Operations {
 	}
 	
 	
-	public void updateSubTaskRecord(int taskId, String subTasks) {
+	public void updateSubTaskRecord(int taskId, String[] subTasks) {
 		try {
+			
+			deleteSubTaskRecord(taskId);
+			
 			Connection conn = getConnection();
 			
-			String sql = "UPDATE subtasks_table SET subtask_list=? WHERE task_id=?;";
-			PreparedStatement stmt = conn.prepareStatement(sql);
+			for(String i:subTasks) {
+				String sql = "INSERT INTO subtasks_table(task_id, subtask_list) VALUES(?,?);";
+				PreparedStatement stmt = conn.prepareStatement(sql);
 			
-			stmt.setString(1, subTasks);
-			stmt.setInt(2, taskId);
+				stmt.setInt(1, taskId);
+				stmt.setString(2, i);
 			
-			stmt.executeUpdate();
+				stmt.executeUpdate();
+			}
 			conn.close();
 			
 		}catch(Exception e){
@@ -112,7 +119,7 @@ public class JDBC_List_SubTasks_Operations {
 			stmt.setInt(1, taskId);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
-				subTasks += rs.getString("subtask_list");
+				subTasks += rs.getString("subtask_list")+",";
 			}
 			rs.close();
 			conn.close();

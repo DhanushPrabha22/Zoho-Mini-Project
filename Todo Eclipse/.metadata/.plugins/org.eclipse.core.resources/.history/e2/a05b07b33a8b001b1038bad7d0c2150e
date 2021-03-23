@@ -1,0 +1,24 @@
+<!--
+
+redirectSort.jsp
+
+java version "1.8.0_45"
+
+Created By Dhanush L
+                 
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>To-Do</title>
+</head>
+<body>
+<%
+	String sortColumn = request.getParameter("pageId");
+	String sortOrder = request.getParameter("pageId");
+	String wildCard = request.getParameter("pageId");
+	
+	//response.sendRedirect("UserTaskList.jsp");
+%>
+</body>
+</html>

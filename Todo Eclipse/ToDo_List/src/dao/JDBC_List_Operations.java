@@ -120,7 +120,7 @@ public class JDBC_List_Operations {
 	}
 	
 	
-	public boolean isCheckTaskName(int userId, String taskName) {
+	/*public boolean isCheckTaskName(int userId, String taskName) {
 		try{
 			int count=0; 
 			
@@ -145,6 +145,6 @@ public class JDBC_List_Operations {
 			System.out.println(e);
 		} 
 		return false;
-	}
+	}*/
 	
 }

@@ -13,6 +13,9 @@ public class SignInController extends Action  {
 		ServletContext context = request.getSession().getServletContext();
 		context.setAttribute("currUser", email );
 		context.setAttribute("pageId", 0 );
+		context.setAttribute("sortColumn", "task_name" );
+		context.setAttribute("sortOrder", "ASC" );
+		context.setAttribute("wildCard", "" );
 		form.reset(mapping,request);
 		return mapping.findForward("success");
 	}

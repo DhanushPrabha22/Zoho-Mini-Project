@@ -32,29 +32,27 @@ Created By Dhanush L
 	ServletContext context = request.getSession().getServletContext();
 	String currUser = (String) context.getAttribute("currUser");
 	int currPageId = (int) context.getAttribute("pageId");
+	String sortColumn = (String) context.getAttribute("sortColumn");
+	String sortOrder = (String) context.getAttribute("sortOrder");
+	String wildCard = (String) context.getAttribute("wildCard");
 	
-	String bgColor="", mainTitle="", sqlQuery="";
+	String bgColor="", mainTitle="";
 	
 	if(currPageId==0){
 		bgColor = "#FFAB91";
 		mainTitle = "All Tasks";
-		sqlQuery = SqlQueryUtils.getQuery1();
 	}else if(currPageId==1){
 		bgColor = "#FFF176";
 		mainTitle = "Important Tasks";
-		sqlQuery = SqlQueryUtils.getQuery2();
 	}else if(currPageId==2){
 		bgColor = "#ef9a9a";
 		mainTitle = "Flagged Tasks";
-		sqlQuery = SqlQueryUtils.getQuery3();
 	}else if(currPageId==3){
 		bgColor = "#A5D6A7";
 		mainTitle = "Planned";
-		sqlQuery = SqlQueryUtils.getQuery4();
 	}else if(currPageId==4){
 		bgColor = "#BCAAA4";
 		mainTitle = "Need Attention";
-		sqlQuery = SqlQueryUtils.getQuery5();
 	}
 	
 	java.util.Date toadyDate = new java.util.Date();
@@ -102,20 +100,6 @@ Created By Dhanush L
   	<input type="hidden" name="pageId" value="4"/>
   	<input type="submit" value="Need Attention"/>
   </form>
-  <div  class="sidenavin metaDataInfo" style="margin:8px;">
-  	<div>
-     	<i class="fa fa-calendar"></i>
-	</div>
-	<div>
-       	<i class="fa fa-calendar"></i>
-	</div>
-	<div>
-       	<i class="fa fa-calendar"></i>
-	</div>
-	<div>
-       	<i class="fa fa-calendar"></i>
-	</div>
-  </div>
 </div>
 <div id="main">
 	<div>
@@ -125,6 +109,24 @@ Created By Dhanush L
 			<div>
 				<p style="color:<%=bgColor%>;"><button class="w3-button w3-xlarge w3-circle w3-card-4" style="background-color:#818181;" id="myBtn">+</button>  Add Task...</p>
 			</div>
+			<div class="metaDataInfo" style="margin-top:-15px;">
+				<select id="sortColumn" name="sortColumn" form="sortForm" style="margin-right:8px;border:none;">
+					<option selected value="task_name">TaskName</option>
+					<option value="date_added">Date Added</option>
+					<option value="task_status">Completed</option>
+					<option value="catCount">Category</option>
+					<option value="subCount">SubTasks</option>
+				</select>
+				<select id="sortOrder" name="sortOrder" form="sortForm" style="margin-right:8px;border:none;">
+					<option value="ASC">Ascending</option>
+					<option selected value="DESC">Descending</option>
+				</select>
+				<form action="redirectSort.jsp" id="sortForm"  method="post">
+					<input type="text" class="form-input1" style="width:75px;margin-right:8px;height:30px;margin-top:10px;border-color:<%=bgColor%>" id="wildCard" name="wildCard"/>
+					<input type="submit" style="width:50px;color:white;background-color:<%=bgColor%>;margin-top:30px;border:none;border-radius:4px;" value="Sort"/>
+				</form>
+			</div>
+			
 			<div class="taskDiv">
 			<div class="chunkedComponentList sticky">
 			<div class="chunkedScrollContainer">
@@ -142,14 +144,16 @@ Created By Dhanush L
 				if(userId!=-1){
 				
 				try{
+					
+					String sqlQuery = SqlQueryUtils.getQuery(sortColumn, sortOrder, wildCard, currPageId);
+					
 					PreparedStatement stmt = conn.prepareStatement(sqlQuery);
 					stmt.setInt(1, userId);
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()){
-						count++;
-						
-						taskId = rs.getInt("task_id");
 						taskName = rs.getString("task_name");
+						count++;
+						taskId = rs.getInt("task_id");
 						description = rs.getString("description");
 						dateAdded = rs.getDate("date_added");
 						taskStatus = rs.getInt("task_status");
@@ -193,8 +197,9 @@ Created By Dhanush L
 						
 						//SubTasks List
 						try{
-							rsSubTask = rs.getString("subtask_list");
-							if(rsSubTask!=null){
+							JDBC_List_SubTasks_Operations subJdbc = new JDBC_List_SubTasks_Operations();
+							rsSubTask = subJdbc.getSubTaskRecord(taskId);
+							if(!rsSubTask.equals("")){
 								subTasksList = rsSubTask.split(",");
 								subFlag++;
 							}	
@@ -203,8 +208,9 @@ Created By Dhanush L
 						
 						//Category List
 						try{
-							rsCategory = rs.getString("category_list");
-							if(rsCategory!=null){
+							JDBC_List_Flags_Operations catJdbc = new JDBC_List_Flags_Operations();
+							rsCategory = catJdbc.getCategoryRecord(taskId);
+							if(!rsCategory.equals("")){
 								categoryList = rsCategory.split(",");
 								catFlag++;
 							}
@@ -475,10 +481,9 @@ Created By Dhanush L
 		</div>
 		
 		<div class="container2">
-			<div class="details" style="background:<%=bgColor%>">
+			<div class="details" style="background:<%=bgColor%>;">
 				<div data-is-scrollable="true" class="details-body">
 					<form action="updatingTasks.jsp" method="post">
-						<input type="hidden" name="userId" value="<%=userId%>"/>
 						<input type="text" style="visibility:hidden" name="taskId" id="taskId" required/>
 						<div class="detailHeader" style="border-radius:10px; margin-top:-25px;">
 						<div class="detailHeader-titleWrapper">
@@ -515,14 +520,27 @@ Created By Dhanush L
 							</div>
 							<div class="input-container">
                         		<i class="fa fa-repeat icon"></i>
-								<input type="text" class="form-input2" style="width:300px;" id="repeat" name="repeat"/>
+								<input type="text" list="repeatings" class="form-input2" style="width:300px;" id="repeat" name="repeat"/>
+								<datalist id="repeatings">
+  									<option value="Daily">
+  									<option value="Weekly">
+ 									<option value="Monthly">
+  									<option value="Yearly">
+								</datalist>
 							</div>
 						</div>
 						<br>
 						<div class="detailHeader" style="border-radius:10px;">
 							<div class="input-container">
                         		<i class="fa fa-tags icon"></i>
-								<input type="text" class="form-input2" style="height:40px;width:300px;" id="category" name="category"/>
+								<input type="text" list="categories" class="form-input2" style="height:40px;width:300px;" id="category" name="category"/>
+								<datalist id="categories">
+  									<option value="Work">
+  									<option value="Education">
+ 									<option value="Personal">
+  									<option value="Friends">
+  									<option value="Hobby">
+								</datalist>
 							</div>
 						</div>
 						 <br>
@@ -548,8 +566,6 @@ Created By Dhanush L
   	<div class="w3-modal-content w3-animate-top w3-card-4">
       		<div class="field-set">
 				<html:form action="adding" method="post">
-					
-					<html:hidden property="userId" styleId="userId" value="<%=String.valueOf(userId)%>"/>
 				
 					<html:errors property="taskname_e"/><br>
 					<html:text styleClass="form-input1" property="taskName" styleId="taskName"/><br>
@@ -570,11 +586,7 @@ Created By Dhanush L
   	<div class="w3-modal-content w3-animate-top w3-card-4">
       	<div class="field-set">
 			<form action="deletingTask.jsp" method="post">
-				<input type="hidden" name="userId" value="<%=userId%>"/>
 				<input type="hidden" name="taskId" id="taskIdDelete"/>
-				<input type="hidden" name="subFlag" id="subFlagDelete"/>
-				<input type="hidden" name="dateFlag" id="dateFlagDelete"/>
-				<input type="hidden" name="catFlag" id="catFlagDelete"/>
 				<input type="text" class="form-input1" style="width:175px;font-weight:bold;" id="taskNameDelete" name="taskName" readonly/><br><br>
 				<input type="submit" class="button1 sign-up" style="background-color:red;color:white;" value="DELETE"/>
 			</form>

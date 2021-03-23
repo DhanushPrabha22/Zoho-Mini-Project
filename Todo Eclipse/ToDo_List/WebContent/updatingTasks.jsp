@@ -25,8 +25,9 @@ Created By Dhanush L
 		JDBC_List_SubTasks_Operations jdbcSubTasks = new JDBC_List_SubTasks_Operations();
 		JDBC_List_Dates_Operations jdbcDates = new JDBC_List_Dates_Operations();
 		
-		int userId = Integer.parseInt(request.getParameter("userId")) , taskId=-1, taskStatus=-1, importantFlag=0, flaggedFlag=0;
-		String description="", repeat=null, subTasks="", category="";
+		
+		int  taskId=-1, taskStatus=-1, importantFlag=0, flaggedFlag=0;
+		String description="", repeat=null;
 		String[] temp={};
 		java.sql.Date remainder=null, dueDate=null;
 		
@@ -70,9 +71,6 @@ Created By Dhanush L
 				if(noSpace.length()>0){
 					temp = noSpace.split("\\s+");
 					if(temp.length>0){
-						for(String i:temp){
-							category += i+",";
-						}
 						flag++;
 					}
 				}
@@ -81,10 +79,10 @@ Created By Dhanush L
 			//Flags Operations
 			if(!jdbcFlags.isCheck_Task_Id(taskId)){
 				if(flag!=0)
-					jdbcFlags.insertFlagRecord(taskId, category);
+					jdbcFlags.insertFlagRecord(taskId, temp);
 			}else{
 				if(flag!=0){
-					jdbcFlags.updateFlagRecord(taskId, category);
+					jdbcFlags.updateFlagRecord(taskId, temp);
 				}else{
 					jdbcFlags.deleteFlagRecord(taskId);
 				}
@@ -100,9 +98,6 @@ Created By Dhanush L
 				if(noSpace.length()>0){
 					temp = noSpace.split("\\s+");
 					if(temp.length>0){
-						for(String i:temp){
-							subTasks += i+",";
-						}
 						flag++;
 					}
 				}
@@ -111,10 +106,10 @@ Created By Dhanush L
 			//SubTasks Operations
 			if(!jdbcSubTasks.isCheck_Task_Id(taskId)){
 				if(flag!=0)
-					jdbcSubTasks.insertSubTaskRecord(taskId, subTasks);
+					jdbcSubTasks.insertSubTaskRecord(taskId, temp);
 			}else{
 				if(flag!=0)
-					jdbcSubTasks.updateSubTaskRecord(taskId, subTasks);
+					jdbcSubTasks.updateSubTaskRecord(taskId, temp);
 				else
 					jdbcSubTasks.deleteSubTaskRecord(taskId);
 			}
