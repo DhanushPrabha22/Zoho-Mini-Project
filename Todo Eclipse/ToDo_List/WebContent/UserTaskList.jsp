@@ -30,14 +30,17 @@ Created By Dhanush L
 </head>
 <body>
 <%
+	try{
 	ServletContext context = request.getSession().getServletContext();
 	String currUser = (String) context.getAttribute("currUser");
 	int currPageId = (int) context.getAttribute("pageId");
 	String sortColumn = (String) context.getAttribute("sortColumn");
 	String sortOrder = (String) context.getAttribute("sortOrder");
 	String wildCard = (String) context.getAttribute("wildCard");
+	String catValue = (String) context.getAttribute("catValue");
 	
 	ArrayList<String> currTaskList = new ArrayList<String>();
+	ArrayList<String> currCategoryList = new ArrayList<String>();
 	
 	String bgColor="", mainTitle="";
 	
@@ -111,9 +114,6 @@ Created By Dhanush L
   	<input type="hidden" name="pageId" value="4"/>
   	<input type="submit" value="Need Attention"/>
   </form>
-  <form action="" method="post">
-  	<input type="submit" value="Category"/>
-  </form>
 </div>
 <div id="main">
 	<div>
@@ -130,12 +130,15 @@ Created By Dhanush L
 					<option selected value="task_name">TaskName</option>
 					<option value="date_added">Date Added</option>
 					<option value="task_status">Completed</option>
-					<option value="catCount">Category</option>
+					<option value="COUNT(category_list)">Category</option>
 					<option value="subCount">SubTasks</option>
 				</select>
+				<div id="replaceMe">
+				
+				</div>
 				<select id="sortOrder" name="sortOrder" form="sortForm" style="margin-right:8px;border:none;color:<%=bgColor%>;">
-					<option selected value="ASC">Ascending</option>
-					<option value="DESC">Descending</option>
+					<option value="ASC">Ascending</option>
+					<option selected value="DESC">Descending</option>
 				</select>
 				<form action="redirectSort.jsp" id="sortForm"  method="post">
 					<input type="text" class="form-input1" style="width:75px;margin-right:8px;height:30px;border-color:<%=bgColor%>" id="wildCard" name="wildCard" title="Enter Wildcard Characters"/>
@@ -161,7 +164,7 @@ Created By Dhanush L
 				
 				try{
 					
-					String sqlQuery = SqlQueryUtils.getQuery(sortColumn, sortOrder, wildCard, currPageId);
+					String sqlQuery = SqlQueryUtils.getQuery(sortColumn, sortOrder, wildCard, currPageId, catValue);
 					
 					PreparedStatement stmt = conn.prepareStatement(sqlQuery);
 					stmt.setInt(1, userId);
@@ -213,26 +216,22 @@ Created By Dhanush L
 						}
 						
 						//SubTasks List
-						try{
-							JDBC_List_SubTasks_Operations subJdbc = new JDBC_List_SubTasks_Operations();
-							rsSubTask = subJdbc.getSubTaskRecord(taskId);
-							if(!rsSubTask.equals("")){
-								subTasksList = rsSubTask.split(",");
-								subFlag++;
-							}	
-						}catch(Exception e){
-						}
+						JDBC_List_SubTasks_Operations subJdbc = new JDBC_List_SubTasks_Operations();
+						rsSubTask = subJdbc.getSubTaskRecord(taskId);
+						if(!rsSubTask.equals("")){
+							subTasksList = rsSubTask.split(",");
+							subFlag++;
+						}	
+						
 						
 						//Category List
-						try{
-							JDBC_List_Flags_Operations catJdbc = new JDBC_List_Flags_Operations();
-							rsCategory = catJdbc.getCategoryRecord(taskId);
-							if(!rsCategory.equals("")){
-								categoryList = rsCategory.split(",");
-								catFlag++;
-							}
-						}catch(Exception e){
+						JDBC_List_Flags_Operations catJdbc = new JDBC_List_Flags_Operations();
+						rsCategory = catJdbc.getCategoryRecord(taskId);
+						if(!rsCategory.equals("")){
+							categoryList = rsCategory.split(",");
+							catFlag++;
 						}
+						
 			%>
 					<div>
 					<div role="none">
@@ -400,6 +399,7 @@ Created By Dhanush L
 					if(catFlag!=0){
 						String cat = "";
 						for(int i=0; i<categoryList.length; i++){
+							currCategoryList.add(categoryList[i]);
 							cat += categoryList[i] + " ";
 			%>
 									<div title="Categories" style="margin:2px;border:1px solid black;border-radius:2px;">
@@ -488,7 +488,7 @@ Created By Dhanush L
 					System.out.println(e);
 				}
 			}else{
-				response.sendRedirect("/ToDo_List/");
+				response.sendRedirect("sign_in.jsp");
 			}
 			%>
 			</div>
@@ -632,5 +632,23 @@ Created By Dhanush L
    		</div>
    	</div>
 </div>
+<div id="iamReplacement">
+	<select id="catValue" name="catValue" form="sortForm" style="margin-right:8px;border:none;color:<%=bgColor%>;display:none;">
+		<option selected value="">Select a Category</option>
+			<%
+				for(int i=0; i<currCategoryList.size(); i++){
+			%>
+					<option value="<%=currCategoryList.get(i)%>"><%=currCategoryList.get(i)%></option>	
+			<%
+				}
+			%>
+	</select>
+</div>
+<%
+	}catch(Exception e){
+		e.printStackTrace();
+		response.sendRedirect("sign_in.jsp");
+	}
+%>
 </body>
 </html>

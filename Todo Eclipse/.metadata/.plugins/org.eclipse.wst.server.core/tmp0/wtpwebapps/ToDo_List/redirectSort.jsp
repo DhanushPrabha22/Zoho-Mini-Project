@@ -17,10 +17,12 @@ Created By Dhanush L
 	String sortColumn = request.getParameter("sortColumn");
 	String sortOrder = request.getParameter("sortOrder");
 	String wildCard = request.getParameter("wildCard");
+	String catValue = request.getParameter("catValue");
 	ServletContext context = request.getSession().getServletContext();
 	context.setAttribute("sortColumn", sortColumn);
 	context.setAttribute("sortOrder", sortOrder);
 	context.setAttribute("wildCard", wildCard);
+	context.setAttribute("catValue", catValue);
 	
 	response.sendRedirect("UserTaskList.jsp");
 %>

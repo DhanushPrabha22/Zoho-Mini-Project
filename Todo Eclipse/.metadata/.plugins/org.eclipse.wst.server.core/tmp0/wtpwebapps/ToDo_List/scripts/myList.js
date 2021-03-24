@@ -29,6 +29,15 @@ window.onload = function(e){
 			modal.style.display = "none";
 		}
 	}
+	$('#sortColumn').on('change',function(){
+		 	jQuery('#replaceMe').replaceWith(jQuery('#iamReplacement'));
+	        if( $(this).val()==="COUNT(category_list)"){
+	        $("#catValue").show()
+	        }
+	        else{
+	        $("#catValue").hide()
+	        }
+	   });
 }
 
 function showSearchModal(){

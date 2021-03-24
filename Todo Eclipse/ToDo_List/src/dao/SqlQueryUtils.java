@@ -2,9 +2,15 @@ package dao;
 
 public class SqlQueryUtils {
 
-	public static String getQuery(String sortColumn, String sortType, String searchString, int pageId) {
+	public static String getQuery(String sortColumn, String sortType, String searchString, int pageId, String catValue) {
 		
-		String returnQuery=null, importantCon="", flaggedCon="", plannedCon="LEFT JOIN", attentionCon="";
+		String returnQuery=null, importantCon="", flaggedCon="", plannedCon="LEFT JOIN", attentionCon="", catCon="";
+		
+		if(sortColumn.equals("COUNT(category_list)") && !catValue.equals("")) {
+			sortType = "DESC";
+			sortColumn = "category_list";
+			catCon = "AND category_list = '"+catValue+"' ";
+		}
 		
 		if(pageId == 1) {
 			importantCon = "AND tasks_table.important_status=1";
@@ -22,7 +28,7 @@ public class SqlQueryUtils {
 		try {
 			returnQuery = "SELECT  task_id_table.task_id, task_name, description, date_added, task_status, important_status, "+
 						  "flagged_status, due_date, repeat_status, remainder_date, "+
-						  "COUNT(subtask_list) AS 'subCount',  COUNT(category_list) AS 'catCount' "+
+						  "COUNT(subtask_list) AS 'subCount', category_list "+
 						  "FROM task_id_table INNER JOIN tasks_table ON "+
 						  "(task_id_table.user_id = ? AND task_id_table.task_id = tasks_table.task_id AND task_name LIKE"+
 						  " '%"+searchString+"%' "
@@ -32,9 +38,9 @@ public class SqlQueryUtils {
 						  "LEFT JOIN subtasks_table ON "+
 						  "(subtasks_table.task_id = task_id_table.task_id) "+
 						  "LEFT JOIN category_table ON "+
-						  "(category_table.task_id = task_id_table.task_id) "+
+						  "(category_table.task_id = task_id_table.task_id "+catCon+") "+
 						  "GROUP BY task_id_table.task_id "+
-						  "ORDER BY "+sortColumn+" "+sortType+" ;";
+						  "ORDER BY "+sortColumn+" "+sortType+" ,task_name ASC ;";
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

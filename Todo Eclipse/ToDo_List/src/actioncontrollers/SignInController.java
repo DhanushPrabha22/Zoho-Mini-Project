@@ -16,6 +16,7 @@ public class SignInController extends Action  {
 		context.setAttribute("sortColumn", "task_name" );
 		context.setAttribute("sortOrder", "ASC" );
 		context.setAttribute("wildCard", "" );
+		context.setAttribute("catValue", "" );
 		form.reset(mapping,request);
 		return mapping.findForward("success");
 	}
